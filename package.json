@@ -120,7 +120,8 @@
       "tagName": "v${version}"
     },
     "npm": {
-      "publish": true
+      "publish": true,
+      "access": "restricted"
     },
     "github": {
       "release": true
