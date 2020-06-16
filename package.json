@@ -114,14 +114,16 @@
     "trailingComma": "es5",
     "useTabs": false
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "release-it": {
     "git": {
       "commitMessage": "chore: release ${version}",
       "tagName": "v${version}"
     },
     "npm": {
-      "publish": true,
-      "access": "restricted"
+      "publish": true
     },
     "github": {
       "release": true
