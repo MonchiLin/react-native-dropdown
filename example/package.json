@@ -16,6 +16,7 @@
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
     "react-native": "~0.61.5",
+    "react-native-elements": "^2.0.2",
     "react-native-unimodules": "~0.9.0",
     "react-native-web": "~0.11.7"
   },
@@ -25,5 +26,25 @@
     "babel-plugin-module-resolver": "^4.0.0",
     "babel-preset-expo": "~8.1.0",
     "expo-cli": "^3.17.18"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@react-native-community",
+      "prettier"
+    ],
+    "rules": {
+      "no-shadow": 0,
+      "react-native/no-inline-styles": 0,
+      "prettier/prettier": [
+        "error",
+        {
+          "quoteProps": "consistent",
+          "singleQuote": true,
+          "tabWidth": 2,
+          "trailingComma": "es5",
+          "useTabs": false
+        }
+      ]
+    }
   }
 }

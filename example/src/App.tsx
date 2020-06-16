@@ -1,25 +1,10 @@
-import * as React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import ReactNativeDropdown from '@monchilin/react-native-dropdown';
+import React from 'react';
+
+// import Example from './Animation';
+// import Example from './AutoPosition';
+import Example from './BaseExample';
+// import Example from './UseRefForImperative';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
-
-  React.useEffect(() => {
-    ReactNativeDropdown.multiply(3, 7).then(setResult);
-  }, []);
-
-  return (
-    <View style={styles.container}>
-      <Text>Result: {result}</Text>
-    </View>
-  );
+  return <Example />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

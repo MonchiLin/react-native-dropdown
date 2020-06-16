@@ -1,27 +1,8 @@
-# @monchilin/react-native-dropdown
+# Run the example
 
-Dropdown component for React Native
-
-## Installation
-
-```sh
-npm install @monchilin/react-native-dropdown
-```
-
-## Usage
-
-```js
-import ReactNativeDropdown from "@monchilin/react-native-dropdown";
-
-// ...
-
-const result = await ReactNativeDropdown.multiply(3, 7);
-```
-
-## Contributing
-
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
-
-## License
-
-MIT
+- [View it with Expo](https://expo.io/@satya164/react-native-tab-view-demos)
+- Run the example locally
+  - Clone the repository and `cd` to this directory
+  - Run `yarn` to install the dependencies
+  - Run `yarn start` to start the packager
+  - Scan the QR Code with the Expo app
