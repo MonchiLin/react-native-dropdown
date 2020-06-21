@@ -1,4 +1,4 @@
-import ModalDropdown from '@monchilin/react-native-dropdown';
+import Dropdown from '@monchilin/react-native-dropdown';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
@@ -116,7 +116,7 @@ export default function BaseExample() {
       <Text style={styles.title}>Dropdown Examples</Text>
       <View style={styles.row}>
         <Text style={styles.label}>Basic Picker</Text>
-        <ModalDropdown
+        <Dropdown
           index={index}
           onSelect={updateIndex}
           rootContainerStyle={styles.dropdownContainer}
@@ -127,10 +127,10 @@ export default function BaseExample() {
         >
           <Text>{DATA_SOURCE[index]}</Text>
           {dropIcon}
-        </ModalDropdown>
+        </Dropdown>
         <Divider />
         <Text style={styles.label}>Disabled Label</Text>
-        <ModalDropdown
+        <Dropdown
           index={index}
           onSelect={updateIndex}
           rootContainerStyle={styles.dropdownContainer}
@@ -142,10 +142,10 @@ export default function BaseExample() {
         >
           <Text style={{ color: '#afafaf' }}>{DATA_SOURCE[index]}</Text>
           {dropIcon}
-        </ModalDropdown>
+        </Dropdown>
         <Divider />
         <Text style={styles.label}>Disabled Item</Text>
-        <ModalDropdown
+        <Dropdown
           index={index}
           onSelect={(index) => {
             if (index === 2 || index === 6) {
@@ -167,11 +167,11 @@ export default function BaseExample() {
         >
           <Text>{DATA_SOURCE[index]}</Text>
           {dropIcon}
-        </ModalDropdown>
+        </Dropdown>
 
         <Divider />
         <Text style={styles.label}>With Border</Text>
-        <ModalDropdown
+        <Dropdown
           index={index}
           onSelect={updateIndex}
           rootContainerStyle={styles.dropdownContainer}
@@ -186,11 +186,11 @@ export default function BaseExample() {
         >
           <Text>{DATA_SOURCE2[index]}</Text>
           {dropIcon}
-        </ModalDropdown>
+        </Dropdown>
 
         <Divider />
         <Text style={styles.label}>With Split</Text>
-        <ModalDropdown
+        <Dropdown
           index={index}
           onSelect={updateIndex}
           rootContainerStyle={styles.dropdownContainer}
@@ -206,11 +206,11 @@ export default function BaseExample() {
         >
           <Text>{DATA_SOURCE2[index]}</Text>
           {dropIcon}
-        </ModalDropdown>
+        </Dropdown>
 
         <Divider />
         <Text style={styles.label}>Custom Render Item</Text>
-        <ModalDropdown
+        <Dropdown
           index={index}
           onSelect={updateIndex}
           rootContainerStyle={styles.dropdownContainer}
@@ -241,7 +241,7 @@ export default function BaseExample() {
           <UserIcon />
           <Text>{DATA_SOURCE2[index]}</Text>
           {dropIcon}
-        </ModalDropdown>
+        </Dropdown>
       </View>
     </View>
   );

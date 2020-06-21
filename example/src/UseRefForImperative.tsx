@@ -1,5 +1,5 @@
 import ModalDropdown, {
-  ModalDropdownHandles,
+  DropdownHandles,
 } from '@monchilin/react-native-dropdown';
 import React, { useRef } from 'react';
 import { Button, StyleSheet, View } from 'react-native';
@@ -17,8 +17,8 @@ const DEMO_OPTIONS_1 = [
 ];
 
 export default function UseRefForImperative() {
-  const modalDropdownRef1 = useRef<ModalDropdownHandles>(null);
-  const modalDropdownRef2 = useRef<ModalDropdownHandles>(null);
+  const modalDropdownRef1 = useRef<DropdownHandles>(null);
+  const modalDropdownRef2 = useRef<DropdownHandles>(null);
 
   return (
     <View style={styles.container}>

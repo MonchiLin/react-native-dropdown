@@ -1,4 +1,4 @@
-import ModalDropdown from '@monchilin/react-native-dropdown';
+import Dropdown from '@monchilin/react-native-dropdown';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
@@ -19,13 +19,13 @@ export default function AutoPosition() {
     <View style={styles.container}>
       <View style={styles.row}>
         <View style={styles.cell}>
-          <ModalDropdown
+          <Dropdown
             defaultLabel={'upper left corner'}
             dataSource={DEMO_OPTIONS_1}
           />
         </View>
         <View style={[styles.cell, { alignItems: 'flex-end' }]}>
-          <ModalDropdown
+          <Dropdown
             defaultLabel={'upper right corner'}
             dataSource={DEMO_OPTIONS_1}
           />
@@ -33,7 +33,7 @@ export default function AutoPosition() {
       </View>
       <View style={[styles.row]}>
         <View style={[styles.cell, { justifyContent: 'flex-end' }]}>
-          <ModalDropdown
+          <Dropdown
             defaultLabel={'lower left corner'}
             dataSource={DEMO_OPTIONS_1}
           />
@@ -44,7 +44,7 @@ export default function AutoPosition() {
             { alignItems: 'flex-end', justifyContent: 'flex-end' },
           ]}
         >
-          <ModalDropdown
+          <Dropdown
             defaultLabel={'lower right corner'}
             dataSource={DEMO_OPTIONS_1}
           />

@@ -1,4 +1,4 @@
-import ModalDropdown from '@monchilin/react-native-dropdown';
+import Dropdown from '@monchilin/react-native-dropdown';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -30,7 +30,7 @@ export default function Animation() {
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        <ModalDropdown
+        <Dropdown
           dataSource={showAnimations}
           defaultLabel={'select'}
           index={transitionShowIndex}
@@ -40,8 +40,8 @@ export default function Animation() {
             click to change transitionShow current is [
             {showAnimations[transitionShowIndex]}]
           </Text>
-        </ModalDropdown>
-        <ModalDropdown
+        </Dropdown>
+        <Dropdown
           dataSource={hiddenAnimations}
           defaultLabel={'select'}
           index={transitionHiddenIndex}
@@ -51,7 +51,7 @@ export default function Animation() {
             click to change transitionShow current is [
             {hiddenAnimations[transitionHiddenIndex]}]
           </Text>
-        </ModalDropdown>
+        </Dropdown>
         <View
           style={{
             height: 1,
@@ -60,7 +60,7 @@ export default function Animation() {
             marginVertical: 20,
           }}
         />
-        <ModalDropdown
+        <Dropdown
           transitionShow={showAnimations[transitionShowIndex]}
           transitionHide={hiddenAnimations[transitionHiddenIndex]}
           dataSource={DEMO_OPTIONS_1}
