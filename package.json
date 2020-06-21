@@ -13,7 +13,7 @@
     "android",
     "ios",
     "cpp",
-    "monchilin-react-native-dropdown.podspec",
+    "monchilin-react-dropdown.podspec",
     "!lib/typescript/example",
     "!**/__tests__"
   ],

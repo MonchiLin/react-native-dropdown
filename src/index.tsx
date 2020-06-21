@@ -1,10 +1,10 @@
-import ModalDropdown from './ModalDropdown';
+import Dropdown from './Dropdown';
 
 export type {
-  Props as ModalDropdownProps,
-  Position as ModalDropdownPosition,
-  ModalDropdownHandles,
+  Props as DropdownProps,
+  Position as DropdownPosition,
+  DropdownHandles,
   Animations as ModalAnimations,
 } from './type';
 
-export default ModalDropdown;
+export default Dropdown;

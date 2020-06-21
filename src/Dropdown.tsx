@@ -74,12 +74,6 @@ const useAnimation = ({
   const anim = useRef(new Animated.Value(90)).current;
   const [style, setStyle] = useState({});
 
-  // useEffect(() => {
-  //   anim.addListener(e => {
-  //     console.log("value => ", e)
-  //   })
-  // }, [])
-
   useEffectWithSkipFirst(() => {
     if (visible) {
       const transitionShowConfig = transitions[transitionShow];
@@ -268,25 +262,25 @@ const usePosition = ({
   heightSourceStyle,
   widthSourceStyle,
 }: UsePositionProps) => {
-  const getHeight = useCallback(() => {
+  const height = useMemo(() => {
     const style = StyleSheet.flatten(
       heightSourceStyle.find((item) => StyleSheet.flatten(item).height)
     );
-    const height = style?.height ? style.height.toString() : '-1';
-    return Number.parseFloat(height);
+    const _height = style?.height ? style.height.toString() : '-1';
+    return Number.parseFloat(_height);
   }, [heightSourceStyle]);
 
-  const getWidth = useCallback(() => {
+  const width = useMemo(() => {
     const style = StyleSheet.flatten(
       widthSourceStyle.find((item) => StyleSheet.flatten(item).width)
     );
-    const width = style?.width ? style.width.toString() : '-1';
-    return Number.parseFloat(width);
+    const _width = style?.width ? style.width.toString() : '-1';
+    return Number.parseFloat(_width);
   }, [widthSourceStyle]);
 
   return {
-    getHeight,
-    getWidth,
+    height,
+    width,
   };
 };
 
@@ -315,7 +309,6 @@ function Component<ItemT>(
     renderLabel,
     onDropdownWillShow = truth,
     onDropdownWillHide = truth,
-
     rootContainerStyle = {},
     rootContainerProps = {},
     labelContainerStyle = {},
@@ -355,8 +348,8 @@ function Component<ItemT>(
     transitionHide,
     transitionShow,
     meta: {
-      dropdownHeight: dropDownSize.getHeight(),
-      dropdownWidth: dropDownSize.getWidth(),
+      dropdownHeight: dropDownSize.height,
+      dropdownWidth: dropDownSize.width,
     },
   });
 
@@ -376,18 +369,21 @@ function Component<ItemT>(
     }
   }, [index]);
 
-  const hide = () => {
+  const hide = useCallback(() => {
     setDropdownVisible(false);
-  };
+  }, []);
 
-  const show = () => {
+  const show = useCallback(() => {
     setDropdownVisible(true);
-  };
+  }, []);
 
-  const select = (newIndex: number) => {
-    setSelectedIndex(newIndex);
-    onSelect(newIndex);
-  };
+  const select = useCallback(
+    (newIndex: number) => {
+      setSelectedIndex(newIndex);
+      onSelect(newIndex);
+    },
+    [onSelect]
+  );
 
   useImperativeHandle(ref, () => ({
     select,
@@ -457,7 +453,7 @@ function Component<ItemT>(
 
   const _calcPosition = () => {
     // 首先根据 style 的对象获取 dropdown 容器的高度
-    const dropdownHeight = dropDownSize.getHeight();
+    const dropdownHeight = dropDownSize.height;
 
     // x: 按钮的 x 点（相对于屏幕左上角）
     // y: 按钮的 y 点（相对于屏幕顶点）
@@ -481,7 +477,7 @@ function Component<ItemT>(
     if (showInLeft) {
       positionStyle.left = x;
     } else {
-      const dropdownWidth = dropDownSize.getWidth();
+      const dropdownWidth = dropDownSize.width;
       if (dropdownWidth !== -1) {
         positionStyle.width = dropdownWidth;
       }
@@ -592,24 +588,18 @@ function Component<ItemT>(
   };
 
   const _renderDropdown = () => {
-    const _dropdownStyle: ViewStyle = StyleSheet.flatten([
-      dropdownStyle,
-      {
-        width: dropDownSize.getWidth(),
-        height: dropDownSize.getHeight(),
-      },
-    ]);
-    const _dropdownWidth = Number.parseFloat(
-      _dropdownStyle.width?.toString() ?? '-1'
-    );
-
+    const dropdownWidth =
+      dropDownSize.width !== -1
+        ? dropDownSize.width - getDropdownHorizontalBorderWidthFromStyle()
+        : undefined;
     return (
       <FlatList
         scrollEnabled={scrollEnabled}
         style={[
-          _dropdownStyle,
-          _dropdownWidth !== -1 && {
-            width: _dropdownWidth - getDropdownHorizontalBorderWidthFromStyle(),
+          dropdownStyle,
+          {
+            width: dropdownWidth,
+            height: dropDownSize.height,
           },
         ]}
         data={dataSource}
@@ -650,7 +640,6 @@ function Component<ItemT>(
             <Animated.View
               style={[
                 styles.dropdown,
-                dropdownStyle,
                 frameStyle,
                 animated && dropdownAnimatedStyle,
               ]}
@@ -688,7 +677,6 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: 'absolute',
-    height: (33 + StyleSheet.hairlineWidth) * 5,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'lightgray',
     borderRadius: 2,
