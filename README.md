@@ -14,9 +14,13 @@ react-native-modal-dropdown 以下简称为 RNMD
 
 我认为大多数前端开发流程中开发者往往需要使用基础组件来封装符合 UI 风格与业务逻辑的组件，RNMD 就是这么一个非常基础的组件，它仅仅用于定位以及弹出 DropDown，所以使用前你可能需要先进行封装。
 
-如果你在寻求一个开箱即用的组件，我已经封装了一些案例，你可以直接将源代码复制进你的项目 // 此处应有链接。
+如果你在寻求一个开箱即用的组件，我已经封装了一些案例，你可以直接将源代码复制进你的项目，在线预览：
 
-RNMD 的特性示例 // 此处应有链接
+https://expo.io/@912305043/monchilin-react-native-dropdown-example
+
+(源代码)(https://github.com/MonchiLin/react-native-dropdown/blob/master/example/src/App.tsx)
+
+
 
 ## Features
 - 100% Typescript 编写提供类型安全 ( compile to JS )
@@ -28,9 +32,14 @@ RNMD 的特性示例 // 此处应有链接
 - 命令式 Api 支持 (Show/Hide/Select)
 
 ## Demo
-<img src="https://github.com/sohobloo/react-native-modal-dropdown/blob/master/docs/demo_1.gif?raw=true" width = "160" height = "287.5" alt="Demo 1"/> <img src="https://github.com/sohobloo/react-native-modal-dropdown/blob/master/docs/demo_2.gif?raw=true" width = "160" height = "287.5" alt="Demo 2"/> <img src="https://github.com/sohobloo/react-native-modal-dropdown/blob/master/docs/demo_3.gif?raw=true" width = "160" height = "287.5" alt="Demo 3"/>
 
-You can find them in the example.
+![Animation_Screen](https://raw.githubusercontent.com/MonchiLin/react-native-dropdown/master/docs/Animation_Screen.gif)
+
+![Animation_Screen](https://raw.githubusercontent.com/MonchiLin/react-native-dropdown/master/docs/AutoPosition_Screen.gif)
+
+![Animation_Screen](https://raw.githubusercontent.com/MonchiLin/react-native-dropdown/master/docs/Currency_Screen.gif)
+
+你可以在 [example](https://github.com/MonchiLin/react-native-dropdown/tree/master/example) 找到更多的 example。
 
 
 
@@ -45,30 +54,25 @@ npm i @monchilin/react-native-dropdown -save
 
 ## 使用
 
-### 基础用法
 导入模块
+
 ```javascript
 import ModalDropdown from '@monchilin/react-native-dropdown';
 ```
-Use as a component:
+
+### 基础用法
 ```javascript
 <ModalDropdown options={['option 1', 'option 2']}/>
 ```
-Use as a wrapper / container:
+### 自定义 label
+
 ```javascript
 <ModalDropdown options={['option 1', 'option 2']}>
-  ...
+  I'm Label
 </ModalDropdown>
 ```
 
-### Customization
-Give the style props as your choice:
-- `style`: Change the style of the button (basic mode) / container (wrapper mode).
-- `textStyle`: Change the style of text of the button. *Invalid in wrapper mode.*
-- `dropdownStyle`: Change the style of dropdown container.
-
-You can also render your option row and row separator by implement `renderRow` and `renderSeparator` function.
-
+### 
 ## API
 ### Props
 Prop                | Type     | Optional | Default   | Description
@@ -105,13 +109,11 @@ Prop                | Type     | Optional | Default   | Description
 
 ## 自定义任何样式与属性
 
-正如开头所说，RNMD 是一个非常基础的组件，它提供了自定义任何样式与属性的能力，但是在 RN 中我们无法像在浏览器中一样直观的看到 DOM 结构，所以看到 `someStyle, someProp` 的时候会感到很困惑，为此，我做了一张图来表示关系。
+正如开头所说，RNMD 是一个非常基础的组件，它提供了自定义任何样式与属性的能力，但是在 RN 中我们无法像在浏览器中一样直观的看到 DOM 结构，所以看到 `someStyle, someProp` api 时会感到很困惑，为此，我做了两张图来表示结构。
 
+![label](https://raw.githubusercontent.com/MonchiLin/react-native-dropdown/master/docs/label-%E7%BB%93%E6%9E%84%E5%9B%BE.png)
 
-
-
-
-
+![dropdown](https://raw.githubusercontent.com/MonchiLin/react-native-dropdown/master/docs/dropdown-%E7%BB%93%E6%9E%84%E5%9B%BE.png)
 
 
 
