@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar, StyleSheet, Text, View } from 'react-native';
 
 import AnimationExample from './Animation';
 import AutoPositionExample from './AutoPosition';
@@ -30,8 +30,9 @@ export default function App() {
 
   return (
     <View style={{ flex: 1 }}>
+      <StatusBar />
       <View style={styles.focus}>
-        <Text>当前所选 demo 页面：</Text>
+        <Text>current demo:</Text>
         <Dropdown
           labelStyle={{ color: '#556a37' }}
           dataSource={DEMO_LABELS}

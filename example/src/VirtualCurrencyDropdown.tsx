@@ -69,7 +69,7 @@ export function VirtualCurrencyDropdown() {
     >
       <View style={[styles.labelContainer, styles.item]}>
         <Text style={{ color: '#FFFFFF' }}>
-          {DATA_SOURCE[index] ?? '请选择币种'}
+          {DATA_SOURCE[index] ?? 'Select Currency'}
         </Text>
         <ArrowDropDown style={{ transform: [{ rotate: rotateInterpolate }] }} />
       </View>
