@@ -676,6 +676,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   dropdown: {
+    height: (33 + StyleSheet.hairlineWidth) * 4,
     position: 'absolute',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'lightgray',
