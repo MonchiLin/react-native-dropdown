@@ -1,6 +1,6 @@
 ### This library is rewritten(fork) from [react-native-modal-dropdown](https://github.com/sohobloo/react-native-modal-dropdown)，感谢原作者。
 
-[![npm version](https://badge.fury.io/js/react-native-modal-dropdown.svg)](https://badge.fury.io/js/react-native-modal-dropdown)
+[![npm version](https://badge.fury.io/js/%40monchilin%2Fcountdown.svg)](https://badge.fury.io/js/%40monchilin%2Fcountdown)
 
 > 这个库重写自[react-native-modal-dropdown](https://github.com/sohobloo/react-native-modal-dropdown)，原有库长期未维护，并且使用了 React Native 的废弃组件 [ListView](https://reactnative.dev/docs/listview.html)，导致无法兼容 React Native For Web，考虑除了兼容 Web 之外，本人还要新增一些功能，改动性比较大，索性不发 PR ，直接重写。
 >
@@ -91,46 +91,46 @@ Prop                | Type     | Optional | Default   | Description
 ------------------- | -------- | -------- | --------- | -----------
 `disabled`          | bool     | Yes      | false     | disable / enable the component.
 `defaultIndex`      | number   | Yes      | -1        | Init selected index. `-1`: None is selected. **This only change the highlight of the dropdown row, you have to give a `defaultValue` to change the init text.**
-`index` | number | Yes | -1 | Init selected index. `-1`: None is selected. 
-`defaultLabel`      | string   | Yes      | Please select... | Init label text. **Invalid in custom label.** 
-`dataSource`           | array    | No |           | dataSource for renderItem. 
-`animated`          | bool     | Yes      | true      | Disable / enable animation. 
-`transitionShow` | string | Yee | flipUp | Expand animation ['flipUp', 'scaleIn', 'fadeIn', 'slideUp'] 
-`transitionHide` | string | Yee | flipDown | Expand animation ['flipDown', 'scaleOut', 'fadeOut', 'slideDown'] 
-`loading` | bool | Yes | false | Enable loading Indicator 
-`scrollEnabled` | bool | Yes | true    | When false, the content does not scroll. The default value is true 
-`keyExtractor` | func | Yes | (_, index) => index.toString() | Used to extract a unique key for a given item at the specified index. Key is used for caching and as the react key to track item re-ordering. The default extractor checks `item.key`, then falls back to using the index, like React does. 
+`index` | number | Yes | -1 | Init selected index. `-1`: None is selected.
+`defaultLabel`      | string   | Yes      | Please select... | Init label text. **Invalid in custom label.**
+`dataSource`           | array    | No |           | dataSource for renderItem.
+`animated`          | bool     | Yes      | true      | Disable / enable animation.
+`transitionShow` | string | Yee | flipUp | Expand animation ['flipUp', 'scaleIn', 'fadeIn', 'slideUp']
+`transitionHide` | string | Yee | flipDown | Expand animation ['flipDown', 'scaleOut', 'fadeOut', 'slideDown']
+`loading` | bool | Yes | false | Enable loading Indicator
+`scrollEnabled` | bool | Yes | true    | When false, the content does not scroll. The default value is true
+`keyExtractor` | func | Yes | (_, index) => index.toString() | Used to extract a unique key for a given item at the specified index. Key is used for caching and as the react key to track item re-ordering. The default extractor checks `item.key`, then falls back to using the index, like React does.
 `adjustFrame`       | func     | Yes      |           | This is a callback after the frame of the dropdown have been calculated and before showing. You will receive a style object as argument with some of the props like `width` `height` `top` `left` and `right`. Change them to appropriate values that accord with your requirement and **make the new style as the return value of this function**.
-`renderItem`         | func     | Yes      |           | Customize render dataSource item: `function(option,index,isActive)` **Will render a default row if `null`/`undefined`.** 
+`renderItem`         | func     | Yes      |           | Customize render dataSource item: `function(option,index,isActive)` **Will render a default row if `null`/`undefined`.**
 `renderSeparator`   | func     | Yes      |           | Customize render dropdown list separators. **Will render a default thin gray line if `null`/`undefined`.**
-`showSeparator` | bool | yes | true | Show split line or not 
-`renderLabel`  | func     | Yes      |           | Use this to extract and return text from dataSource object. This text will show on label after dataSource selected. **Invalid in wrapper mode.** 
+`showSeparator` | bool | yes | true | Show split line or not
+`renderLabel`  | func     | Yes      |           | Use this to extract and return text from dataSource object. This text will show on label after dataSource selected. **Invalid in wrapper mode.**
 `onDropdownWillShow`| func     | Yes      |           | Trigger when dropdown will show by touching the button. **Return `false` can cancel the event.**
 `onDropdownWillHide`| func     | Yes      |           | Trigger when dropdown will hide by touching the button. **Return `false` can cancel the event.**
-`onSelect`          | func     | Yes      |           | Trigger when item touched with selected `index` and `value`. **Return `false` can cancel the event.** 
+`onSelect`          | func     | Yes      |           | Trigger when item touched with selected `index` and `value`. **Return `false` can cancel the event.**
 
 ### Customizable properties and styles
 
 见 `自定义任何样式与属性` 章节
 
-| Prop                          | Type                                                         | Optional |
-| ----------------------------- | ------------------------------------------------------------ | -------- |
-| `rootContainerStyle`          | `StyleProp<ViewStyle>`                                       | Yes      |
-| `rootContainerProps`          | `Omit<ViewProps, 'style'>`                                   | Yes      |
-| `labelContainerDisabledStyle` | `StyleProp<ViewStyle>`                                       | Yes      |
-| `labelContainerStyle`         | `StyleProp<ViewStyle>`                                       | Yes      |
-| `labelContainerProps`         | `Omit<TouchableOpacityProps, 'ref'|'disabled'|'onPress'>`    | Yes      |
-| `labelStyle`                  | `StyleProp<TextStyle>`                                       | Yes      |
-| `labelDisabledStyle`          | `StyleProp<TextStyle>`                                       | Yes      |
-| `labelProps`                  | `Omit<TextProps, 'style'>`                                   | Yes      |
-| `modalProps`                  | `Omit<ModalProps, 'visible'|'animated'|'transparent'|'onRequestClose'>` | Yes      |
-| `dropdownStyle`               | `StyleProp<ViewStyle>`                                       | Yes      |
-| `dropdownProps`               | `Omit<FlatListProps<ItemT>, 'data'|'style'|'scrollEnabled'   |'renderItem'|'ItemSeparatorComponent'|'keyExtractor' >` | Yes      |
-| `itemTouchableProps`          | `Omit<TouchableOpacityProps,'onPress' >`                     | Yes      |
-| `itemLabelStyle`              | `StyleProp<TextStyle>`                                       | Yes      |
-| `itemLabelProps`              | `Omit<TextProps, 'style'>`                                   | Yes      |
-| `itemHighlightStyle`          | `StyleProp<ViewStyle>`                                       | Yes      |
-| `itemLabelHighlightStyle`     | `StyleProp<TextStyle>`                                       | Yes      |
+| Prop                          | Type                                     | Optional |
+| ----------------------------- | ---------------------------------------- | -------- |
+| `rootContainerStyle`          | `StyleProp<ViewStyle>`                   | Yes      |
+| `rootContainerProps`          | `Omit<ViewProps, 'style'>`               | Yes      |
+| `labelContainerDisabledStyle` | `StyleProp<ViewStyle>`                   | Yes      |
+| `labelContainerStyle`         | `StyleProp<ViewStyle>`                   | Yes      |
+| `labelContainerProps`         | `Omit<TouchableOpacityProps, 'ref'>`     | Yes      |
+| `labelStyle`                  | `StyleProp<TextStyle>`                   | Yes      |
+| `labelDisabledStyle`          | `StyleProp<TextStyle>`                   | Yes      |
+| `labelProps`                  | `Omit<TextProps, 'style'>`               | Yes      |
+| `modalProps`                  | `Omit<ModalProps, 'visible'>`            | Yes      |
+| `dropdownStyle`               | `StyleProp<ViewStyle>`                   | Yes      |
+| `dropdownProps`               | `Omit<FlatListProps<ItemT>, 'data'>`     | Yes      |
+| `itemTouchableProps`          | `Omit<TouchableOpacityProps,'onPress'>`  | Yes      |
+| `itemLabelStyle`              | `StyleProp<TextStyle>`                   | Yes      |
+| `itemLabelProps`              | `Omit<TextProps, 'style'>`               | Yes      |
+| `itemHighlightStyle`          | `StyleProp<ViewStyle>`                   | Yes      |
+| `itemLabelHighlightStyle`     | `StyleProp<TextStyle>`                   | Yes      |
 
 
 
@@ -158,5 +158,3 @@ Prop                | Type     | Optional | Default   | Description
 ### slideUp 与 slideDown 掉帧？
 
 RN 的 Animated 模块提供了 `useNativeDriver` 选项以[提升动画性能](https://reactnative.dev/blog/2017/02/14/using-native-driver-for-animated)，但是它只能与 `opacity` 和 `transform` 一起使用，*slideUp* 与 *slideDown* 是使用 `height` 实现的，在开发模式下更为明显，所以，如果对流畅度有要求建议使用其他动画效果。
-
-
