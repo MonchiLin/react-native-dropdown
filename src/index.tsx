@@ -3,7 +3,7 @@ import Dropdown from './Dropdown';
 export type {
   Props as DropdownProps,
   Position as DropdownPosition,
-  DropdownHandles,
+  Handles as DropdownHandles,
   Animations as ModalAnimations,
 } from './type';
 

@@ -25,6 +25,7 @@ import {
 
 import Modal from './Modal';
 import {
+  Handles,
   Position,
   Props,
   UseAnimationProps,
@@ -665,7 +666,7 @@ function Component<ItemT>(
 }
 
 export default React.forwardRef(Component) as <T>(
-  p: Props<T> & { ref?: React.Ref<HTMLDivElement> }
+  p: Props<T> & { ref?: React.Ref<Handles> }
 ) => JSX.Element;
 
 const styles = StyleSheet.create({

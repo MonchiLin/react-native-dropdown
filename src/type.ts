@@ -149,7 +149,7 @@ export type Props<ItemT> = {
   children?: JSX.Element | JSX.Element[];
 };
 
-export type DropdownHandles = {
+export type Handles = {
   select: (index: number) => void;
   hide: () => void;
   show: () => void;
