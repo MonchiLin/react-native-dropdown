@@ -52,9 +52,9 @@ https://expo.io/@912305043/monchilin-react-native-dropdown-example
 
 ![Animation_Screen](https://raw.githubusercontent.com/MonchiLin/react-native-dropdown/master/docs/Currency_Screen.gif)
 
-你可以在 [这里](https://github.com/MonchiLin/react-native-dropdown/tree/master/example) 找到更多的实例。
+你可以在 [这里](https://github.com/MonchiLin/react-native-dropdown/tree/master/example) 找到更多的用例。
 
-You can be [here](https://github.com/MonchiLin/react-native-dropdown/tree/master/example) Find more instances.
+You can be [here](https://github.com/MonchiLin/react-native-dropdown/tree/master/example) Find more usecase.
 
 ## Installation
 
