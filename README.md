@@ -63,6 +63,13 @@ npm i @monchilin/react-native-dropdown -save
 // yarn add @monchilin/react-native-dropdown
 ```
 
+如果你想要在 React Native Web 中使用，你还需要安装 [resize-observer-polyfill](https://www.npmjs.com/package/resize-observer-polyfill)，因为 Dropdown 位置计算依赖于 onLayout 事件，但是在 React Native Web 中 onLayout 事件依赖于 [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver)，但是在一些 webkit 内核的浏览器并没有实现（ qq浏览器：谁在说我？）
+
+```
+npm install resize-observer-polyfill --save-dev
+// yarn add resize-observer-polyfill -D
+```
+
 
 
 ## 使用
