@@ -1,6 +1,4 @@
 {
-  "name": "@monchilin/react-native-dropdown-example",
-  "displayName": "ReactNativeDropdown Example",
   "expo": {
     "name": "@monchilin/react-native-dropdown-example",
     "slug": "monchilin-react-native-dropdown-example",

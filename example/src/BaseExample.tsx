@@ -1,14 +1,7 @@
-import Dropdown from '@monchilin/react-native-dropdown';
+import Dropdown from './Dropdown';
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  Animated,
-  Image,
-  ImageStyle,
-  StyleProp,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Animated, Image, ImageStyle, StyleProp, StyleSheet, Text, View, } from 'react-native';
+import DropdownFlatList from './Dropdown/DropdownFlatList';
 
 const DATA_SOURCE = [
   'option 1',
@@ -47,8 +40,8 @@ const DATA_SOURCE2 = [
 ];
 
 const ArrowDropDown = ({
-  style,
-}: {
+                         style,
+                       }: {
   style: Animated.WithAnimatedValue<StyleProp<ImageStyle>>;
 }) => {
   return (
@@ -108,7 +101,7 @@ export default function BaseExample() {
   });
 
   const dropIcon = (
-    <ArrowDropDown style={{ transform: [{ rotate: rotateInterpolate }] }} />
+    <ArrowDropDown style={{ transform: [{ rotate: rotateInterpolate }] }}/>
   );
 
   return (
@@ -117,131 +110,123 @@ export default function BaseExample() {
       <View style={styles.row}>
         <Text style={styles.label}>Basic Picker</Text>
         <Dropdown
-          index={index}
-          onSelect={updateIndex}
+          transitionShow={"flipUp"}
+          transitionHide={"flipDown"}
           rootContainerStyle={styles.dropdownContainer}
-          labelContainerStyle={styles.labelContainer}
-          dataSource={DATA_SOURCE}
-          onDropdownWillShow={() => setVisibleState(true)}
-          onDropdownWillHide={() => setVisibleState(false)}
-        >
-          <Text>{DATA_SOURCE[index]}</Text>
-          {dropIcon}
-        </Dropdown>
-        <Divider />
-        <Text style={styles.label}>Disabled Label</Text>
-        <Dropdown
-          index={index}
-          onSelect={updateIndex}
-          rootContainerStyle={styles.dropdownContainer}
-          labelContainerStyle={styles.labelContainer}
-          dataSource={DATA_SOURCE}
-          disabled
-          onDropdownWillShow={() => setVisibleState(true)}
-          onDropdownWillHide={() => setVisibleState(false)}
-        >
-          <Text style={{ color: '#afafaf' }}>{DATA_SOURCE[index]}</Text>
-          {dropIcon}
-        </Dropdown>
-        <Divider />
-        <Text style={styles.label}>Disabled Item</Text>
-        <Dropdown
-          index={index}
-          onSelect={(index) => {
-            if (index === 2 || index === 6) {
-              return false;
-            } else {
-              updateIndex(index);
-            }
-          }}
-          onDropdownWillHide={(_, index) => {
-            if (index === 2 || index === 6) {
-              return false;
-            }
-            setVisibleState(false);
-          }}
-          rootContainerStyle={styles.dropdownContainer}
-          labelContainerStyle={styles.labelContainer}
-          dataSource={DATA_SOURCE1}
-          onDropdownWillShow={() => setVisibleState(true)}
-        >
-          <Text>{DATA_SOURCE[index]}</Text>
-          {dropIcon}
-        </Dropdown>
+          onModalWillShow={() => setVisibleState(true)}
+          onModalWillHide={() => setVisibleState(false)}
+          Trigger={
+            <View style={{ flexDirection: "row" }}>
+              <Text>{DATA_SOURCE[index]}</Text>
+              {dropIcon}
+            </View>
+          }
+          Overlay={<DropdownFlatList onSelect={({index}) => updateIndex(index)} data={DATA_SOURCE1}/>}
+        />
+        <Divider/>
+        {/*<Text style={styles.label}>Disabled Label</Text>*/}
+        {/*<Dropdown*/}
+        {/*  index={index}*/}
+        {/*  onSelect={updateIndex}*/}
+        {/*  rootContainerStyle={styles.dropdownContainer}*/}
+        {/*  labelContainerStyle={styles.labelContainer}*/}
+        {/*  dataSource={DATA_SOURCE}*/}
+        {/*  disabled*/}
+        {/*  onDropdownWillShow={() => setVisibleState(true)}*/}
+        {/*  onDropdownWillHide={() => setVisibleState(false)}*/}
+        {/*>*/}
+        {/*  <Text style={{ color: '#afafaf' }}>{DATA_SOURCE[index]}</Text>*/}
+        {/*  {dropIcon}*/}
+        {/*</Dropdown>*/}
+        {/*<Divider/>*/}
+        {/*<Text style={styles.label}>Disabled Item</Text>*/}
+        {/*<Dropdown*/}
+        {/*  index={index}*/}
+        {/*  onSelect={(index) => {*/}
+        {/*    if (index === 2 || index === 6) {*/}
+        {/*      return false;*/}
+        {/*    } else {*/}
+        {/*      updateIndex(index);*/}
+        {/*    }*/}
+        {/*  }}*/}
+        {/*  onDropdownWillHide={(_, index) => {*/}
+        {/*    if (index === 2 || index === 6) {*/}
+        {/*      return false;*/}
+        {/*    }*/}
+        {/*    setVisibleState(false);*/}
+        {/*  }}*/}
+        {/*  rootContainerStyle={styles.dropdownContainer}*/}
+        {/*  labelContainerStyle={styles.labelContainer}*/}
+        {/*  dataSource={DATA_SOURCE1}*/}
+        {/*  onDropdownWillShow={() => setVisibleState(true)}*/}
+        {/*>*/}
+        {/*  <Text>{DATA_SOURCE[index]}</Text>*/}
+        {/*  {dropIcon}*/}
+        {/*</Dropdown>*/}
 
-        <Divider />
-        <Text style={styles.label}>With Border</Text>
-        <Dropdown
-          index={index}
-          onSelect={updateIndex}
-          rootContainerStyle={styles.dropdownContainer}
-          labelContainerStyle={[
-            styles.labelContainer,
-            styles.border,
-            styles.pa5,
-          ]}
-          dataSource={DATA_SOURCE2}
-          onDropdownWillShow={() => setVisibleState(true)}
-          onDropdownWillHide={() => setVisibleState(false)}
-        >
-          <Text>{DATA_SOURCE2[index]}</Text>
-          {dropIcon}
-        </Dropdown>
+        {/*<Divider/>*/}
+        {/*<Text style={styles.label}>With Border</Text>*/}
+        {/*<Dropdown*/}
+        {/*  index={index}*/}
+        {/*  onSelect={updateIndex}*/}
+        {/*  rootContainerStyle={styles.dropdownContainer}*/}
+        {/*  labelContainerStyle={[*/}
+        {/*    styles.labelContainer,*/}
+        {/*    styles.border,*/}
+        {/*    styles.pa5,*/}
+        {/*  ]}*/}
+        {/*  dataSource={DATA_SOURCE2}*/}
+        {/*  onDropdownWillShow={() => setVisibleState(true)}*/}
+        {/*  onDropdownWillHide={() => setVisibleState(false)}*/}
+        {/*>*/}
+        {/*  <Text>{DATA_SOURCE2[index]}</Text>*/}
+        {/*  {dropIcon}*/}
+        {/*</Dropdown>*/}
 
-        <Divider />
-        <Text style={styles.label}>With Split</Text>
-        <Dropdown
-          index={index}
-          onSelect={updateIndex}
-          rootContainerStyle={styles.dropdownContainer}
-          showSeparator
-          labelContainerStyle={[
-            styles.labelContainer,
-            styles.border,
-            styles.pa5,
-          ]}
-          dataSource={DATA_SOURCE2}
-          onDropdownWillShow={() => setVisibleState(true)}
-          onDropdownWillHide={() => setVisibleState(false)}
-        >
-          <Text>{DATA_SOURCE2[index]}</Text>
-          {dropIcon}
-        </Dropdown>
+        {/*<Divider/>*/}
+        {/*<Text style={styles.label}>With Split</Text>*/}
+        {/*<Dropdown*/}
+        {/*  index={index}*/}
+        {/*  onSelect={updateIndex}*/}
+        {/*  rootContainerStyle={styles.dropdownContainer}*/}
+        {/*  showSeparator*/}
+        {/*  labelContainerStyle={[*/}
+        {/*    styles.labelContainer,*/}
+        {/*    styles.border,*/}
+        {/*    styles.pa5,*/}
+        {/*  ]}*/}
+        {/*  dataSource={DATA_SOURCE2}*/}
+        {/*  onDropdownWillShow={() => setVisibleState(true)}*/}
+        {/*  onDropdownWillHide={() => setVisibleState(false)}*/}
+        {/*>*/}
+        {/*  <Text>{DATA_SOURCE2[index]}</Text>*/}
+        {/*  {dropIcon}*/}
+        {/*</Dropdown>*/}
 
-        <Divider />
+        {/*<Divider/>*/}
         <Text style={styles.label}>Custom Render Item</Text>
         <Dropdown
-          index={index}
-          onSelect={updateIndex}
           rootContainerStyle={styles.dropdownContainer}
-          showSeparator
-          labelContainerStyle={[
-            styles.labelContainer,
-            styles.border,
-            styles.pa5,
-          ]}
-          dataSource={DATA_SOURCE2}
-          onDropdownWillShow={() => setVisibleState(true)}
-          onDropdownWillHide={() => setVisibleState(false)}
-          renderItem={(item) => {
-            return (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  padding: 10,
-                  alignItems: 'center',
-                }}
-              >
-                <UserIcon />
-                <Text style={{ paddingLeft: 20 }}>{item}</Text>
-              </View>
-            );
-          }}
-        >
-          <UserIcon />
-          <Text>{DATA_SOURCE2[index]}</Text>
-          {dropIcon}
-        </Dropdown>
+          Overlay={
+            <DropdownFlatList
+              onSelect={({index}) => updateIndex(index)}
+              data={DATA_SOURCE2}
+              renderItem={({ item, index }) => {
+                return <View>
+                  <Text>{item}</Text>
+                </View>;
+              }}/>
+          }
+          Trigger={
+            <View style={{ flexDirection: "row" }}>
+              <UserIcon/>
+              <Text>{DATA_SOURCE2[index]}</Text>
+              {dropIcon}
+            </View>
+          }
+          onModalWillShow={() => setVisibleState(true)}
+          onModalWillHide={() => setVisibleState(false)}
+        />
       </View>
     </View>
   );
@@ -270,9 +255,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
   },
-  dropdownContainer: {
-    width: 200,
-  },
+  dropdownContainer: {},
   labelContainer: {
     justifyContent: 'space-between',
     flexDirection: 'row',

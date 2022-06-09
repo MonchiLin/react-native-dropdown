@@ -1,4 +1,4 @@
-import Dropdown from '@monchilin/react-native-dropdown';
+import Dropdown from './Dropdown';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,

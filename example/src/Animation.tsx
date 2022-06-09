@@ -1,6 +1,7 @@
-import Dropdown from '@monchilin/react-native-dropdown';
+import Dropdown from './Dropdown';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import DropdownFlatList from "./Dropdown/DropdownFlatList";
 
 const DEMO_OPTIONS_1 = [
   'option 1',
@@ -24,34 +25,44 @@ const hiddenAnimations = [
 ] as const;
 
 export default function Animation() {
-  const [transitionShowIndex, setTransitionShowIndex] = useState(3);
-  const [transitionHiddenIndex, setTransitionHiddenIndex] = useState(3);
+  const [transitionShowIndex, setTransitionShowIndex] = useState(0);
+  const [transitionHiddenIndex, setTransitionHiddenIndex] = useState(0);
 
   return (
     <View style={styles.container}>
       <View style={styles.row}>
         <Dropdown
-          dataSource={showAnimations}
-          defaultLabel={'select'}
-          index={transitionShowIndex}
-          onSelect={setTransitionShowIndex}
-        >
-          <Text style={{ color: '#60c8f6' }}>
-            click to change transitionShow current is [
-            {showAnimations[transitionShowIndex]}]
-          </Text>
-        </Dropdown>
+          Trigger={<View>
+            <Text style={{ color: '#60c8f6' }}>
+              click to change transitionShow current is [
+              {showAnimations[transitionShowIndex]}]
+            </Text>
+          </View>}
+          Overlay={
+            <DropdownFlatList
+              onSelect={({ index }) => {
+                setTransitionShowIndex(index);
+              }} data={showAnimations}
+            />
+          }
+        />
         <Dropdown
-          dataSource={hiddenAnimations}
-          defaultLabel={'select'}
-          index={transitionHiddenIndex}
-          onSelect={setTransitionHiddenIndex}
-        >
-          <Text style={{ color: '#60c8f6' }}>
-            click to change transitionShow current is [
-            {hiddenAnimations[transitionHiddenIndex]}]
-          </Text>
-        </Dropdown>
+          Overlay={
+            <DropdownFlatList
+              index={transitionHiddenIndex}
+              onSelect={({ index }) => {
+                setTransitionHiddenIndex(index);
+              }}
+              data={hiddenAnimations}
+            />
+          }
+          Trigger={
+            <Text style={{ color: '#60c8f6' }}>
+              click to change transitionShow current is [
+              {hiddenAnimations[transitionHiddenIndex]}]
+            </Text>
+          }
+        />
         <View
           style={{
             height: 1,
@@ -63,8 +74,8 @@ export default function Animation() {
         <Dropdown
           transitionShow={showAnimations[transitionShowIndex]}
           transitionHide={hiddenAnimations[transitionHiddenIndex]}
-          dataSource={DEMO_OPTIONS_1}
-          defaultLabel={'try transition'}
+          Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
+          Trigger={'try transition'}
         />
       </View>
     </View>

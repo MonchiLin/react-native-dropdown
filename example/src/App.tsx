@@ -6,7 +6,8 @@ import AutoPositionExample from './AutoPosition';
 import BaseExample from './BaseExample';
 import { VirtualCurrencyDropdown } from './VirtualCurrencyDropdown';
 import UseRefForImperativeExample from './UseRefForImperative';
-import Dropdown from '../../src/Dropdown';
+import Dropdown from './Dropdown';
+import DropdownFlatList from "./Dropdown/DropdownFlatList";
 
 const DEMOS = {
   Animation: AnimationExample,
@@ -14,7 +15,7 @@ const DEMOS = {
   BaseExample: BaseExample,
   VirtualCurrencyDropdown: () => (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <VirtualCurrencyDropdown />
+      <VirtualCurrencyDropdown/>
     </View>
   ),
   UseRefForImperative: UseRefForImperativeExample,
@@ -23,24 +24,22 @@ const DEMOS = {
 const DEMO_LABELS = Object.keys(DEMOS);
 
 export default function App() {
-  const [demoIndex, updateDemoIndex] = useState(3);
+  const [demoIndex, updateDemoIndex] = useState(2);
 
   // @ts-ignore
   const Component = DEMOS[DEMO_LABELS[demoIndex]];
 
   return (
     <View style={{ flex: 1 }}>
-      <StatusBar />
+      <StatusBar/>
       <View style={styles.focus}>
         <Text>current demo:</Text>
         <Dropdown
-          labelStyle={{ color: '#556a37' }}
-          dataSource={DEMO_LABELS}
-          onSelect={updateDemoIndex}
-          index={demoIndex}
+          Trigger={DEMO_LABELS[demoIndex]}
+          Overlay={<DropdownFlatList data={DEMO_LABELS} onSelect={({ index }) => updateDemoIndex(index)}/>}
         />
       </View>
-      <Component />
+      <Component/>
     </View>
   );
 }

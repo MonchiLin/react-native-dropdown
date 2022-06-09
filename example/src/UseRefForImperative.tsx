@@ -1,6 +1,6 @@
 import ModalDropdown, {
   DropdownHandles,
-} from '@monchilin/react-native-dropdown';
+} from './Dropdown';
 import React, { useRef } from 'react';
 import { Button, StyleSheet, View } from 'react-native';
 
