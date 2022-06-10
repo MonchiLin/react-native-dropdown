@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
 import { SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native';
 
-import AnimationExample from './Animation';
-import AutoPositionExample from './AutoPosition';
+import WithAnimation from './WithAnimation';
+import WithAutoPosition from './WithAutoPosition';
 import BaseExample from './BaseExample';
-import { VirtualCurrencyDropdown } from './VirtualCurrencyDropdown';
-import UseRefForImperativeExample from './UseRefForImperative';
+import WithImperative from './WithImperative';
+import DemoVirtualCurrencyDropdown from './DemoVirtualCurrencyDropdown';
 import Dropdown from './Dropdown';
 import DropdownFlatList from "./Dropdown/DropdownFlatList";
 
 const DEMOS = {
-  Animation: AnimationExample,
-  AutoPosition: AutoPositionExample,
+  WithAnimation: WithAnimation,
+  WithAutoPosition: WithAutoPosition,
   BaseExample: BaseExample,
-  VirtualCurrencyDropdown: () => (
+  DemoVirtualCurrencyDropdown: () => (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <VirtualCurrencyDropdown/>
+      <DemoVirtualCurrencyDropdown/>
     </View>
   ),
-  UseRefForImperative: UseRefForImperativeExample,
+  WithImperative: WithImperative,
 };
 
 const DEMO_LABELS = Object.keys(DEMOS) as (keyof typeof DEMOS)[];

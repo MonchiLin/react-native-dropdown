@@ -17,7 +17,7 @@ const DEMO_OPTIONS_1 = [
   'option 9',
 ];
 
-export default function UseRefForImperative() {
+export default function WithImperative() {
   const modalDropdownRef1 = useRef<ModalDropdownHandles>(null);
 
   return (

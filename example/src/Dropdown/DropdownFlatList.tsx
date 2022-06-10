@@ -1,4 +1,4 @@
-import { FlatList } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 import React from 'react';
 import { DropdownFlatListProps } from './type';
 import { useModalDropdownContext } from './internal/context';
@@ -48,12 +48,17 @@ export default function DropdownFlatList<T extends string | number>({
       showsVerticalScrollIndicator={false}
       {...props}
       style={[
-        props.style,
         {
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: 'lightgray',
+          borderRadius: 2,
+          backgroundColor: '#ffffff',
           width: context.triggerSize.width,
-          height: context.triggerSize.height,
+          height: 100,
         },
+        props.style,
       ]}
     />
   );
 }
+

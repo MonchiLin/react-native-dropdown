@@ -15,7 +15,7 @@ const DEMO_OPTIONS_1 = [
   'option 9',
 ];
 
-export default function AutoPosition() {
+export default function WithAutoPosition() {
   return (
     <View style={styles.container}>
       <View style={styles.row}>

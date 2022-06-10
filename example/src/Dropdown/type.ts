@@ -11,13 +11,13 @@ import type {
 } from 'react-native';
 import type { ModalProps } from 'react-native-modal';
 import { ModalHideReason, ModalShowReason } from "./reasons";
+import { GestureResponderEvent } from "react-native";
 
 export type Position = {
-  width?: number;
-  height: number;
   top: number;
   left?: number;
   right?: number;
+  bottom?: number;
 };
 
 export type Animations = {
@@ -25,16 +25,16 @@ export type Animations = {
   transitionHide: 'flipDown' | 'scaleOut' | 'fadeOut' | 'slideDown';
 };
 
-export type UseAnimationPropsMeta = {
-  dropdownWidth: number;
-  dropdownHeight: number;
+export type UseAnimationContext = {
+  triggerWidth: number;
+  triggerHeight: number;
 };
 
 export type UseAnimationProps = {
   visible: boolean;
   transitionShow: Animations['transitionShow'];
   transitionHide: Animations['transitionHide'];
-  meta: UseAnimationPropsMeta;
+  getContext: () => UseAnimationContext;
 };
 
 export type DropdownFlatListProps<ItemT extends string | number> = {
@@ -70,6 +70,8 @@ export type DropdownFlatListItemProps = {
 } & Omit<TextProps, 'children'>;
 
 export type Props<ItemT> = {
+  // 是否显示
+  visible?: boolean;
   // 是否禁止点击 label 弹出 dropdown
   disabled?: boolean;
   // 是否启动 dropdown 动画
@@ -91,8 +93,8 @@ export type Props<ItemT> = {
 
   // 根容器相关
   // 根容器的样式
-  rootContainerStyle?: StyleProp<ViewStyle>;
-  rootContainerProps?: Omit<ViewProps, 'style'>;
+  dropdownProps?: Omit<ViewProps, 'style'>;
+  dropdownStyle?: StyleProp<ViewStyle>;
 
   // Modal 相关
   modalProps?: Partial<Omit<ModalProps, 'isVisible' | 'onBackButtonPress' | 'children' | 'animationIn' | 'animationOut' | 'animationInTiming' | 'animationOutTiming'>>;
@@ -105,7 +107,7 @@ export type Props<ItemT> = {
     'onPress'>;
 
   // 触发 Dropdown 的元素
-  Trigger: JSX.Element | JSX.Element[] | string;
+  Trigger: ((props: { onPress: (event: GestureResponderEvent) => void }) => JSX.Element) | string;
   // 触发 Dropdown 后弹出的元素
   Overlay: JSX.Element | JSX.Element[];
 };

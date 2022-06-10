@@ -1,6 +1,6 @@
 import Dropdown from './Dropdown';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import DropdownFlatList from "./Dropdown/DropdownFlatList";
 
 const DEMO_OPTIONS_1 = [
@@ -24,7 +24,7 @@ const hiddenAnimations = [
   'slideDown',
 ] as const;
 
-export default function Animation() {
+export default function WithAnimation() {
   const [transitionShowIndex, setTransitionShowIndex] = useState(0);
   const [transitionHiddenIndex, setTransitionHiddenIndex] = useState(0);
 
@@ -32,12 +32,12 @@ export default function Animation() {
     <View style={styles.container}>
       <View style={styles.row}>
         <Dropdown
-          Trigger={<View>
+          Trigger={props => <TouchableOpacity onPress={props.onPress}>
             <Text style={{ color: '#60c8f6' }}>
               click to change transitionShow current is [
               {showAnimations[transitionShowIndex]}]
             </Text>
-          </View>}
+          </TouchableOpacity>}
           Overlay={
             <DropdownFlatList
               onSelect={({ index }) => {
@@ -56,11 +56,10 @@ export default function Animation() {
               data={hiddenAnimations}
             />
           }
-          Trigger={
-            <Text style={{ color: '#60c8f6' }}>
-              click to change transitionShow current is [
-              {hiddenAnimations[transitionHiddenIndex]}]
-            </Text>
+          Trigger={props => <Text onPress={props.onPress} style={{ color: '#60c8f6' }}>
+            click to change transitionShow current is [
+            {hiddenAnimations[transitionHiddenIndex]}]
+          </Text>
           }
         />
         <View

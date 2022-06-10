@@ -1,24 +1,24 @@
-import React, { useCallback, useImperativeHandle, useRef, useState, } from 'react';
+import React, { useCallback, useImperativeHandle, useMemo, useRef, useState, } from 'react';
 import {
-  Animated, SafeAreaView,
+  Animated,
+  LayoutChangeEvent,
   StyleSheet,
   Text,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   useWindowDimensions,
-  View,
-  ViewStyle
+  View
 } from 'react-native';
 
 import Modal from 'react-native-modal';
 import type { Handles, Position, Props } from './type';
 import { id, truth } from './internal/utils';
-import { useAnimation, useSize } from './internal/hooks';
+import { useAnimation, useBorderWidth, useEffectWithSkipFirst } from './internal/hooks';
 import { ModalDropdownProvider } from './internal/context';
 import { ModalHideReason, ModalShowReason } from "./reasons";
 
 function Component<ItemT>(
   {
+    visible,
     disabled = false,
     animated = true,
     transitionShow = 'flipUp',
@@ -26,8 +26,8 @@ function Component<ItemT>(
     adjustFrame = id,
     onModalWillHide = truth,
     onModalWillShow = truth,
-    rootContainerStyle = {},
-    rootContainerProps = {},
+    dropdownProps = {},
+    dropdownStyle = {},
     modalProps = {},
     Trigger,
     Overlay,
@@ -36,88 +36,91 @@ function Component<ItemT>(
 ) {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
-  const _button = useRef<TouchableOpacity>(null);
-  const _buttonFrame = useRef({ x: 0, y: 0, w: 0, h: 0 });
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-
-  const overlaySize = useSize({
-    heightSourceStyle: [rootContainerStyle, styles.overlay],
-    widthSourceStyle: [rootContainerStyle, rootContainerStyle],
-  });
-
-  const {
-    style: dropdownAnimatedStyle,
-    visible: _dropdownVisibleForAnimation,
-  } = useAnimation({
-    visible: dropdownVisible,
-    transitionHide,
-    transitionShow,
-    meta: {
-      dropdownHeight: overlaySize.height,
-      dropdownWidth: overlaySize.width,
-    },
-  });
+  const triggerRef = useRef<View>(null);
+  const overlayRef = useRef<View>(null);
+  const [triggerFrame, setTriggerFrame] = useState({ x: 0, y: 0, w: 0, h: 0 });
+  const [overlayFrame, setOverlayFrame] = useState({ x: 0, y: 0, w: 0, h: 0 });
+  const [overlayVisible, setOverlayVisible] = useState(!!visible);
 
   const hide = useCallback(() => {
-    setDropdownVisible(false);
+    _onRequestClose(ModalHideReason.WithRef);
   }, []);
 
   const show = useCallback(() => {
-    setDropdownVisible(true);
+    _onRequestOpen(ModalShowReason.WithRef);
   }, []);
+
+  useEffectWithSkipFirst(() => {
+    if (visible) {
+      _onRequestOpen(ModalShowReason.VisibleStateChange);
+    } else {
+      _onRequestClose(ModalHideReason.VisibleStateChange);
+    }
+  }, [visible]);
 
   useImperativeHandle(ref, () => ({
     hide,
     show,
   }));
 
-  const onLayout = () => {
-    if (!_button.current?.measure) {
+  const {
+    style: dropdownAnimatedStyle,
+    visible: _dropdownVisibleForAnimation,
+  } = useAnimation({
+    visible: overlayVisible,
+    transitionHide,
+    transitionShow,
+    getContext: () => {
+      return {
+        triggerHeight: triggerFrame.h,
+        triggerWidth: triggerFrame.w,
+      };
+    },
+  });
+
+  const borderWidthState = useBorderWidth([]);
+
+  const onLayout = (event: LayoutChangeEvent) => {
+    // 保持传入的 onLayout 事件
+    dropdownProps.onLayout?.(event);
+    if (!triggerRef.current) {
       return;
     }
-    _button.current.measure((_fx, _fy, width, height, px, py) => {
-      _buttonFrame.current = { x: px, y: py, w: width, h: height };
+    triggerRef.current.measure((_fx, _fy, width, height, px, py) => {
+      setTriggerFrame({ x: px, y: py, w: width, h: height });
+    });
+  };
+
+  const onOverlayLayout = (event: LayoutChangeEvent) => {
+    if (!triggerRef.current) {
+      return
+    }
+    triggerRef.current.measure((_fx, _fy, width, height, px, py) => {
+      setOverlayFrame({ x: px, y: py, w: width, h: height });
     });
   };
 
   const _onRequestClose = (reason: ModalHideReason) => {
     if (onModalWillHide(reason) !== false) {
-      hide();
+      setOverlayVisible(false);
     }
   };
 
   const _onRequestOpen = (reason: ModalShowReason) => {
     if (onModalWillShow(reason) !== false) {
-      show();
+      setOverlayVisible(true);
     }
   };
 
-  // 获取 Trigger 的水平边框, 这样可以精确的计算 Trigger 的宽度
-  const getTriggerHorizontalBorderWidthFromStyle = useCallback(() => {
-    const style: ViewStyle = StyleSheet.flatten([
-      rootContainerStyle,
-      styles.overlay,
-    ]);
-    const borderWidth = style.borderWidth ?? 0;
-    const borderLeftWidth = style.borderLeftWidth ?? 0;
-    const borderRightWidth = style.borderRightWidth ?? 0;
-
-    if (!borderLeftWidth && !borderRightWidth) {
-      return borderWidth * 2;
-    }
-
-    return borderLeftWidth + borderRightWidth;
-  }, [rootContainerStyle]);
-
   const _calcPosition = () => {
     // 首先根据 style 的对象获取 dropdown 容器的高度
-    const dropdownHeight = overlaySize.height;
+    const dropdownHeight = triggerFrame.h;
 
     // x: 按钮的 x 点（相对于屏幕左上角）
     // y: 按钮的 y 点（相对于屏幕顶点）
     // w: 按钮的 width
     // h: 按钮的 height
-    const { x, y, w, h } = _buttonFrame.current;
+    const { x, y, w, h } = triggerFrame;
 
     // 距离底部的空间
     const buttonSpace = windowHeight - y - h;
@@ -127,44 +130,38 @@ function Component<ItemT>(
     const showInBottom = buttonSpace >= dropdownHeight || buttonSpace >= y;
     const showInLeft = rightSpace >= x;
     const positionStyle: Position = {
-      height: dropdownHeight,
       top: showInBottom ? y + h : Math.max(0, y - dropdownHeight),
     };
 
     if (showInLeft) {
       positionStyle.left = x;
     } else {
-      const dropdownWidth = overlaySize.width;
-      if (dropdownWidth !== -1) {
-        positionStyle.width = dropdownWidth;
-      }
       positionStyle.right = rightSpace - w;
     }
 
     return adjustFrame(positionStyle);
   };
 
-  const _renderTigger = <TouchableOpacity
-    onLayout={onLayout}
-    ref={_button}
-    disabled={disabled}
-    onPress={() => _onRequestOpen(ModalShowReason.ClickTrigger)}
-    style={[]}
-  >
-    {
-      typeof Trigger === "object"
-        ? Trigger
-        : <Text>{Trigger}</Text>
+  const _renderTrigger = useMemo(() => {
+    if (typeof Trigger === "function") {
+      return <Trigger onPress={() => _onRequestOpen(ModalShowReason.ClickTrigger)}/>;
+    } else {
+      return <Text onPress={() => _onRequestOpen(ModalShowReason.ClickTrigger)}>{Trigger}</Text>;
     }
-  </TouchableOpacity>;
+  }, [Trigger, disabled]);
 
   const _renderModel = () => {
     const frameStyle = _calcPosition();
     const dropdownWidth =
-      overlaySize.width !== -1
-        ? overlaySize.width - getTriggerHorizontalBorderWidthFromStyle()
+      triggerFrame.w === undefined
+        // 减去水平边框, 这样可以精确的计算 Trigger 的宽度
+        ? triggerFrame.w - borderWidthState.w
         : undefined;
-    const dropdownHeight = overlaySize.height;
+    const dropdownHeight =
+      triggerFrame.h === undefined
+        // 减去垂直边框, 这样可以精确的计算 Trigger 的宽度
+        ? triggerFrame.h - borderWidthState.h
+        : undefined;
 
     return (
       <ModalDropdownProvider
@@ -192,14 +189,16 @@ function Component<ItemT>(
           onBackButtonPress={() => _onRequestClose(ModalHideReason.ClickBackButton)}
         >
           <TouchableWithoutFeedback
-            disabled={!dropdownVisible}
+            disabled={!overlayVisible}
             onPress={() => _onRequestClose(ModalHideReason.ClickOverlayOutside)}
           >
-            <View style={styles.modal}>
+            <View style={{ flex: 1 }}>
               <Animated.View
+                ref={overlayRef}
+                onLayout={onOverlayLayout}
                 style={[
-                  styles.overlay,
                   frameStyle,
+                  { position: 'absolute', },
                   animated && dropdownAnimatedStyle,
                 ]}
               >
@@ -214,11 +213,12 @@ function Component<ItemT>(
 
   return (
     <View
+      {...dropdownProps}
       onLayout={onLayout}
-      {...rootContainerProps}
-      style={[rootContainerStyle, { position: "relative" }]}
+      ref={triggerRef}
+      style={[dropdownStyle, { position: "relative" }]}
     >
-      {_renderTigger}
+      {_renderTrigger}
       {_renderModel()}
     </View>
   );
@@ -231,16 +231,5 @@ export default React.forwardRef(Component) as <T>(
 const styles = StyleSheet.create({
   label: {
     fontSize: 12,
-  },
-  modal: {
-    flexGrow: 1,
-  },
-  overlay: {
-    height: (33 + StyleSheet.hairlineWidth) * 4,
-    position: 'absolute',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'lightgray',
-    borderRadius: 2,
-    backgroundColor: '#ffffff',
   },
 });

@@ -1,5 +1,5 @@
-import { UseAnimationProps, UseAnimationPropsMeta, } from '../type';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { UseAnimationContext, UseAnimationProps, } from '../type';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Easing, StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
 export const useEffectWithSkipFirst = (
@@ -101,11 +101,11 @@ const transitions = {
       toValue: 100,
       useNativeDriver: false,
     },
-    interpolate: (meta: UseAnimationPropsMeta) => ({
+    interpolate: (meta: UseAnimationContext) => ({
       inputRange: [0, 100],
       duration: 300,
       easing: Easing.in,
-      outputRange: [0, meta.dropdownHeight],
+      outputRange: [0, meta.triggerHeight],
     }),
     initialValue: 0,
     animationType: 'timing',
@@ -115,11 +115,11 @@ const transitions = {
       toValue: 0,
       useNativeDriver: false,
     },
-    interpolate: (meta: UseAnimationPropsMeta) => ({
+    interpolate: (meta: UseAnimationContext) => ({
       inputRange: [0, 100],
       duration: 300,
       easing: Easing.sin,
-      outputRange: [0, meta.dropdownHeight],
+      outputRange: [0, meta.triggerHeight],
     }),
     initialValue: 100,
     animationType: 'timing',
@@ -130,7 +130,7 @@ export const useAnimation = ({
                                visible,
                                transitionHide,
                                transitionShow,
-                               meta,
+                               getContext,
                              }: UseAnimationProps) => {
   const [state, setState] = useState(false);
   const anim = useRef(new Animated.Value(90)).current;
@@ -140,7 +140,7 @@ export const useAnimation = ({
     if (visible) {
       const transitionShowConfig = transitions[transitionShow];
       const interpolate = anim.interpolate(
-        transitionShowConfig.interpolate(meta)
+        transitionShowConfig.interpolate(getContext())
       );
       anim.setValue(transitionShowConfig.initialValue);
       setState(true);
@@ -169,7 +169,7 @@ export const useAnimation = ({
     } else {
       const transitionHideConfig = transitions[transitionHide];
       const interpolate = anim.interpolate(
-        transitionHideConfig.interpolate(meta)
+        transitionHideConfig.interpolate(getContext())
       );
       anim.setValue(transitionHideConfig.initialValue);
 
@@ -211,9 +211,9 @@ type useSizeParameters = {
 };
 
 export const useSize = ({
-                              heightSourceStyle,
-                              widthSourceStyle,
-                            }: useSizeParameters) => {
+                          heightSourceStyle,
+                          widthSourceStyle,
+                        }: useSizeParameters) => {
   const height = useMemo(() => {
     const style = StyleSheet.flatten(
       heightSourceStyle.find((item) => StyleSheet.flatten(item).height)
@@ -234,4 +234,26 @@ export const useSize = ({
     height,
     width,
   };
+};
+
+export const useBorderWidth = (styles: ViewStyle[]) => {
+  // 获取 Trigger 的水平边框, 这样可以精确的计算 Trigger 的宽度
+  const borderState = useMemo(() => {
+    const style: ViewStyle = StyleSheet.flatten(styles);
+    const borderLeftWidth = style.borderLeftWidth || style.borderWidth || 0;
+    const borderRightWidth = style.borderRightWidth || style.borderWidth || 0;
+    const borderTopWidth = style.borderTopWidth || style.borderWidth || 0;
+    const borderBottomWidth = style.borderBottomWidth || style.borderWidth || 0;
+
+    return {
+      left: borderLeftWidth,
+      right: borderRightWidth,
+      bottom: borderTopWidth,
+      top: borderBottomWidth,
+      w: borderLeftWidth + borderRightWidth,
+      h: borderTopWidth + borderBottomWidth,
+    };
+  }, [styles]);
+
+  return borderState;
 };

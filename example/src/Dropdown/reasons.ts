@@ -1,6 +1,8 @@
 export enum ModalShowReason {
   // 通过 ref.current.show 手动显示
   WithRef = "WithRef",
+  // 可见性改变
+  VisibleStateChange = "VisibleStateChange",
   // 点击 Trigger
   ClickTrigger = "ClickTrigger"
 }
@@ -8,6 +10,8 @@ export enum ModalShowReason {
 export enum ModalHideReason {
   // 通过 ref.current.hide 手动隐藏
   WithRef = "WithRef",
+  // 可见性改变
+  VisibleStateChange = "VisibleStateChange",
   // 点击返回按钮
   ClickBackButton = "ClickBackButton",
   // 点击 Overlay 内部

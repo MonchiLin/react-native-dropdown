@@ -1,6 +1,6 @@
 import Dropdown from './Dropdown';
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, ImageStyle, StyleProp, StyleSheet, Text, View, } from 'react-native';
+import { Animated, ImageStyle, StyleProp, StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
 import DropdownFlatList from "./Dropdown/DropdownFlatList";
 
 const DATA_SOURCE = ['BNA', 'USDI', 'SHUIBI', 'ATC', 'CTC'];
@@ -18,7 +18,7 @@ const ArrowDropDown = ({
   );
 };
 
-export function VirtualCurrencyDropdown() {
+export default function DemoVirtualCurrencyDropdown() {
   const [visible, setVisibleState] = useState(false);
   const [index, updateIndex] = useState(-1);
   const animatedValue = useRef(new Animated.Value(0));
@@ -60,14 +60,13 @@ export function VirtualCurrencyDropdown() {
           );
         }}
       />}
-      rootContainerStyle={{ width: 150 }}
       Trigger={
-        <View style={[styles.labelContainer, styles.item]}>
+        props => <TouchableOpacity onPress={props.onPress} style={[styles.labelContainer, styles.item]}>
           <Text style={{ color: '#FFFFFF' }}>
             {DATA_SOURCE[index] ?? 'Select Currency'}
           </Text>
           <ArrowDropDown style={{ transform: [{ rotate: rotateInterpolate }] }}/>
-        </View>
+        </TouchableOpacity>
       }
     />
   );

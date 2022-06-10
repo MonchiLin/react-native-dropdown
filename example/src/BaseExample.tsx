@@ -1,6 +1,6 @@
 import Dropdown from './Dropdown';
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Image, ImageStyle, StyleProp, StyleSheet, Text, View, } from 'react-native';
+import { Animated, Image, ImageStyle, StyleProp, StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
 import DropdownFlatList from './Dropdown/DropdownFlatList';
 
 const DATA_SOURCE = [
@@ -112,16 +112,17 @@ export default function BaseExample() {
         <Dropdown
           transitionShow={"flipUp"}
           transitionHide={"flipDown"}
-          rootContainerStyle={styles.dropdownContainer}
           onModalWillShow={() => setVisibleState(true)}
           onModalWillHide={() => setVisibleState(false)}
-          Trigger={
-            <View style={{ flexDirection: "row" }}>
-              <Text>{DATA_SOURCE[index]}</Text>
-              {dropIcon}
-            </View>
+          Trigger={props => <TouchableOpacity
+            onPress={props.onPress}
+            style={[{ flexDirection: "row" }, styles.dropdownContainer]}
+          >
+            <Text>{DATA_SOURCE[index]}</Text>
+            {dropIcon}
+          </TouchableOpacity>
           }
-          Overlay={<DropdownFlatList onSelect={({index}) => updateIndex(index)} data={DATA_SOURCE1}/>}
+          Overlay={<DropdownFlatList onSelect={({ index }) => updateIndex(index)} data={DATA_SOURCE1}/>}
         />
         <Divider/>
         {/*<Text style={styles.label}>Disabled Label</Text>*/}
@@ -206,10 +207,9 @@ export default function BaseExample() {
         {/*<Divider/>*/}
         <Text style={styles.label}>Custom Render Item</Text>
         <Dropdown
-          rootContainerStyle={styles.dropdownContainer}
           Overlay={
             <DropdownFlatList
-              onSelect={({index}) => updateIndex(index)}
+              onSelect={({ index }) => updateIndex(index)}
               data={DATA_SOURCE2}
               renderItem={({ item, index }) => {
                 return <View>
@@ -218,11 +218,12 @@ export default function BaseExample() {
               }}/>
           }
           Trigger={
-            <View style={{ flexDirection: "row" }}>
+            props => <TouchableOpacity onPress={props.onPress}
+                                       style={[{ flexDirection: "row" }, styles.dropdownContainer]}>
               <UserIcon/>
               <Text>{DATA_SOURCE2[index]}</Text>
               {dropIcon}
-            </View>
+            </TouchableOpacity>
           }
           onModalWillShow={() => setVisibleState(true)}
           onModalWillHide={() => setVisibleState(false)}
