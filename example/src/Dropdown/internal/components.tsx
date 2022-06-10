@@ -32,8 +32,8 @@ export const TOUCHABLE_ELEMENTS = [
 export function KeepTouchable(component: JSX.Element, props: TouchableWithoutFeedbackProps) {
   const preservedProps = {
     onPress(event) {
-      props.onPress?.(event)
-      component.props.onPress?.(event)
+      props.onPress?.(event);
+      component.props.onPress?.(event);
     },
   };
 
@@ -46,18 +46,14 @@ export function KeepTouchable(component: JSX.Element, props: TouchableWithoutFee
     const { children: realChildren } = component.props;
     switch (component.type.displayName) {
       case 'TouchableHighlight': {
-        return (
-          <TouchableHighlight {...props}>{realChildren}</TouchableHighlight>
-        );
+        return <TouchableHighlight {...props}>{realChildren}</TouchableHighlight>
       }
       case 'TouchableOpacity': {
         return <TouchableOpacity {...props}>{realChildren}</TouchableOpacity>;
       }
       case 'TouchableWithoutFeedback': {
         return (
-          <TouchableWithoutFeedback {...props}>
-            {realChildren}
-          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback {...props}>{realChildren}</TouchableWithoutFeedback>
         );
       }
       case 'Pressable': {

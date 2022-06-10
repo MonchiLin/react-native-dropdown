@@ -1,6 +1,6 @@
-import { UseAnimationProps, UseAnimationPropsMeta, UsePositionProps, } from '../type';
+import { UseAnimationProps, UseAnimationPropsMeta, } from '../type';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, Easing, StyleSheet } from 'react-native';
+import { Animated, Easing, StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
 export const useEffectWithSkipFirst = (
   callback: React.EffectCallback,
@@ -205,15 +205,20 @@ export const useAnimation = ({
   };
 };
 
-export const usePosition = ({
+type useSizeParameters = {
+  heightSourceStyle: StyleProp<ViewStyle>[];
+  widthSourceStyle: StyleProp<ViewStyle>[];
+};
+
+export const useSize = ({
                               heightSourceStyle,
                               widthSourceStyle,
-                            }: UsePositionProps) => {
+                            }: useSizeParameters) => {
   const height = useMemo(() => {
     const style = StyleSheet.flatten(
       heightSourceStyle.find((item) => StyleSheet.flatten(item).height)
     );
-    const _height = style?.height ? style.height.toString() : '-1';
+    const _height = style?.height ? style.height.toString() : "0";
     return Number.parseFloat(_height);
   }, [heightSourceStyle]);
 
@@ -221,7 +226,7 @@ export const usePosition = ({
     const style = StyleSheet.flatten(
       widthSourceStyle.find((item) => StyleSheet.flatten(item).width)
     );
-    const _width = style?.width ? style.width.toString() : '-1';
+    const _width = style?.width ? style.width.toString() : "0";
     return Number.parseFloat(_width);
   }, [widthSourceStyle]);
 

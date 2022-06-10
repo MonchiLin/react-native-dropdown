@@ -1,19 +1,13 @@
 import Dropdown from './Dropdown';
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  Animated,
-  ImageStyle,
-  StyleProp,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Animated, ImageStyle, StyleProp, StyleSheet, Text, View, } from 'react-native';
+import DropdownFlatList from "./Dropdown/DropdownFlatList";
 
 const DATA_SOURCE = ['BNA', 'USDI', 'SHUIBI', 'ATC', 'CTC'];
 
 const ArrowDropDown = ({
-  style,
-}: {
+                         style,
+                       }: {
   style: Animated.WithAnimatedValue<StyleProp<ImageStyle>>;
 }) => {
   return (
@@ -52,28 +46,30 @@ export function VirtualCurrencyDropdown() {
 
   return (
     <Dropdown
-      onDropdownWillShow={() => setVisibleState(true)}
-      onDropdownWillHide={() => setVisibleState(false)}
-      dataSource={DATA_SOURCE}
-      index={index}
-      onSelect={updateIndex}
+      onModalWillHide={() => setVisibleState(true)}
+      onModalWillShow={() => setVisibleState(false)}
+      Overlay={<DropdownFlatList
+        data={DATA_SOURCE}
+        index={index}
+        onSelect={({ index }) => updateIndex(index)}
+        renderItem={({ item, isActive }) => {
+          return (
+            <View style={[styles.item, isActive && styles.itemActive]}>
+              <Text style={{ color: '#FFFFFF' }}>{item}</Text>
+            </View>
+          );
+        }}
+      />}
       rootContainerStyle={{ width: 150 }}
-      showSeparator={false}
-      renderItem={(item, _, isActive) => {
-        return (
-          <View style={[styles.item, isActive && styles.itemActive]}>
-            <Text style={{ color: '#FFFFFF' }}>{item}</Text>
-          </View>
-        );
-      }}
-    >
-      <View style={[styles.labelContainer, styles.item]}>
-        <Text style={{ color: '#FFFFFF' }}>
-          {DATA_SOURCE[index] ?? 'Select Currency'}
-        </Text>
-        <ArrowDropDown style={{ transform: [{ rotate: rotateInterpolate }] }} />
-      </View>
-    </Dropdown>
+      Trigger={
+        <View style={[styles.labelContainer, styles.item]}>
+          <Text style={{ color: '#FFFFFF' }}>
+            {DATA_SOURCE[index] ?? 'Select Currency'}
+          </Text>
+          <ArrowDropDown style={{ transform: [{ rotate: rotateInterpolate }] }}/>
+        </View>
+      }
+    />
   );
 }
 

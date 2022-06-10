@@ -1,6 +1,7 @@
 import Dropdown from './Dropdown';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import DropdownFlatList from "./Dropdown/DropdownFlatList";
 
 const DEMO_OPTIONS_1 = [
   'option 1',
@@ -20,22 +21,22 @@ export default function AutoPosition() {
       <View style={styles.row}>
         <View style={styles.cell}>
           <Dropdown
-            defaultLabel={'upper left corner'}
-            dataSource={DEMO_OPTIONS_1}
+            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
+            Trigger={'upper left corner'}
           />
         </View>
         <View style={[styles.cell, { alignItems: 'flex-end' }]}>
           <Dropdown
-            defaultLabel={'upper right corner'}
-            dataSource={DEMO_OPTIONS_1}
+            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
+            Trigger={'upper right corner'}
           />
         </View>
       </View>
       <View style={[styles.row]}>
         <View style={[styles.cell, { justifyContent: 'flex-end' }]}>
           <Dropdown
-            defaultLabel={'lower left corner'}
-            dataSource={DEMO_OPTIONS_1}
+            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
+            Trigger={'lower left corner'}
           />
         </View>
         <View
@@ -45,8 +46,8 @@ export default function AutoPosition() {
           ]}
         >
           <Dropdown
-            defaultLabel={'lower right corner'}
-            dataSource={DEMO_OPTIONS_1}
+            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
+            Trigger={'lower right corner'}
           />
         </View>
       </View>

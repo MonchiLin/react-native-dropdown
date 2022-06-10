@@ -2,14 +2,15 @@ import React from "react";
 import { id } from "./utils";
 
 type Context = {
-  overlaySize: { height: number, width: number },
-  onItemPress: (info?: { item: any, index: number }) => void
+  triggerSize: { height: number, width: number },
+  onRequestClose: () => void
 }
 
 const ModalDropdownContext = React.createContext<Context>({
-  overlaySize: { height: 0, width: 0 },
-  onItemPress: id
-});
+    triggerSize: { height: 0, width: 0 },
+    onRequestClose: id
+  },
+);
 
 export const ModalDropdownProvider = ModalDropdownContext.Provider;
 

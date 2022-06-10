@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StatusBar, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native';
 
 import AnimationExample from './Animation';
 import AutoPositionExample from './AutoPosition';
@@ -21,16 +21,15 @@ const DEMOS = {
   UseRefForImperative: UseRefForImperativeExample,
 };
 
-const DEMO_LABELS = Object.keys(DEMOS);
+const DEMO_LABELS = Object.keys(DEMOS) as (keyof typeof DEMOS)[];
 
 export default function App() {
   const [demoIndex, updateDemoIndex] = useState(2);
 
-  // @ts-ignore
   const Component = DEMOS[DEMO_LABELS[demoIndex]];
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <StatusBar/>
       <View style={styles.focus}>
         <Text>current demo:</Text>
@@ -40,7 +39,7 @@ export default function App() {
         />
       </View>
       <Component/>
-    </View>
+    </SafeAreaView>
   );
 }
 

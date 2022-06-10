@@ -1,33 +1,28 @@
-import React, {
-  useCallback,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useImperativeHandle, useRef, useState, } from 'react';
 import {
-  Animated,
+  Animated, SafeAreaView,
   StyleSheet,
+  Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
   useWindowDimensions,
   View,
-  ViewStyle,
-  Text
+  ViewStyle
 } from 'react-native';
 
 import Modal from 'react-native-modal';
-
 import type { Handles, Position, Props } from './type';
 import { id, truth } from './internal/utils';
-import { useAnimation, usePosition } from './internal/hooks';
+import { useAnimation, useSize } from './internal/hooks';
 import { ModalDropdownProvider } from './internal/context';
+import { ModalHideReason, ModalShowReason } from "./reasons";
 
 function Component<ItemT>(
   {
     disabled = false,
     animated = true,
-    transitionShow = 'fadeIn',
-    transitionHide = 'fadeOut',
+    transitionShow = 'flipUp',
+    transitionHide = 'flipDown',
     adjustFrame = id,
     onModalWillHide = truth,
     onModalWillShow = truth,
@@ -45,8 +40,8 @@ function Component<ItemT>(
   const _buttonFrame = useRef({ x: 0, y: 0, w: 0, h: 0 });
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
-  const dropDownSize = usePosition({
-    heightSourceStyle: [rootContainerStyle, styles.dropdown],
+  const overlaySize = useSize({
+    heightSourceStyle: [rootContainerStyle, styles.overlay],
     widthSourceStyle: [rootContainerStyle, rootContainerStyle],
   });
 
@@ -58,8 +53,8 @@ function Component<ItemT>(
     transitionHide,
     transitionShow,
     meta: {
-      dropdownHeight: dropDownSize.height,
-      dropdownWidth: dropDownSize.width,
+      dropdownHeight: overlaySize.height,
+      dropdownWidth: overlaySize.width,
     },
   });
 
@@ -85,28 +80,23 @@ function Component<ItemT>(
     });
   };
 
-  const _onRequestClose = () => {
-    if (onModalWillHide() !== false) {
+  const _onRequestClose = (reason: ModalHideReason) => {
+    if (onModalWillHide(reason) !== false) {
       hide();
     }
   };
 
-  const _onModalPress = () => {
-    if (onModalWillHide() !== false) {
-      hide();
-    }
-  };
-
-  const _onLabelPress = () => {
-    if (onModalWillShow() !== false) {
+  const _onRequestOpen = (reason: ModalShowReason) => {
+    if (onModalWillShow(reason) !== false) {
       show();
     }
   };
 
-  const getDropdownHorizontalBorderWidthFromStyle = useCallback(() => {
+  // 获取 Trigger 的水平边框, 这样可以精确的计算 Trigger 的宽度
+  const getTriggerHorizontalBorderWidthFromStyle = useCallback(() => {
     const style: ViewStyle = StyleSheet.flatten([
       rootContainerStyle,
-      styles.dropdown,
+      styles.overlay,
     ]);
     const borderWidth = style.borderWidth ?? 0;
     const borderLeftWidth = style.borderLeftWidth ?? 0;
@@ -121,7 +111,7 @@ function Component<ItemT>(
 
   const _calcPosition = () => {
     // 首先根据 style 的对象获取 dropdown 容器的高度
-    const dropdownHeight = dropDownSize.height;
+    const dropdownHeight = overlaySize.height;
 
     // x: 按钮的 x 点（相对于屏幕左上角）
     // y: 按钮的 y 点（相对于屏幕顶点）
@@ -144,7 +134,7 @@ function Component<ItemT>(
     if (showInLeft) {
       positionStyle.left = x;
     } else {
-      const dropdownWidth = dropDownSize.width;
+      const dropdownWidth = overlaySize.width;
       if (dropdownWidth !== -1) {
         positionStyle.width = dropdownWidth;
       }
@@ -154,12 +144,12 @@ function Component<ItemT>(
     return adjustFrame(positionStyle);
   };
 
-  const _renderLabel = <TouchableOpacity
+  const _renderTigger = <TouchableOpacity
     onLayout={onLayout}
     ref={_button}
     disabled={disabled}
-    onPress={_onLabelPress}
-    style={[disabled && styles.labelContainerDisabled]}
+    onPress={() => _onRequestOpen(ModalShowReason.ClickTrigger)}
+    style={[]}
   >
     {
       typeof Trigger === "object"
@@ -168,26 +158,29 @@ function Component<ItemT>(
     }
   </TouchableOpacity>;
 
-  const onItemPress = (info: { item: any, index: number }) => {
-    _onRequestClose();
-  };
-
   const _renderModel = () => {
     const frameStyle = _calcPosition();
     const dropdownWidth =
-      dropDownSize.width !== -1
-        ? dropDownSize.width - getDropdownHorizontalBorderWidthFromStyle()
+      overlaySize.width !== -1
+        ? overlaySize.width - getTriggerHorizontalBorderWidthFromStyle()
         : undefined;
-    const dropdownHeight = dropDownSize.height;
+    const dropdownHeight = overlaySize.height;
 
     return (
       <ModalDropdownProvider
         value={{
-          overlaySize: { height: dropdownHeight, width: dropdownWidth },
-          onItemPress: onItemPress,
+          triggerSize: { height: dropdownHeight, width: dropdownWidth },
+          onRequestClose: () => _onRequestClose(ModalHideReason.ClickOverlayInside),
         }}
       >
         <Modal
+          supportedOrientations={[
+            'portrait',
+            'portrait-upside-down',
+            'landscape',
+            'landscape-left',
+            'landscape-right',
+          ]}
           statusBarTranslucent
           {...modalProps}
           // remove default margin
@@ -196,23 +189,16 @@ function Component<ItemT>(
           animationInTiming={1}
           animationOutTiming={1}
           isVisible={_dropdownVisibleForAnimation}
-          onBackButtonPress={_onRequestClose}
-          supportedOrientations={[
-            'portrait',
-            'portrait-upside-down',
-            'landscape',
-            'landscape-left',
-            'landscape-right',
-          ]}
+          onBackButtonPress={() => _onRequestClose(ModalHideReason.ClickBackButton)}
         >
           <TouchableWithoutFeedback
             disabled={!dropdownVisible}
-            onPress={_onModalPress}
+            onPress={() => _onRequestClose(ModalHideReason.ClickOverlayOutside)}
           >
             <View style={styles.modal}>
               <Animated.View
                 style={[
-                  styles.dropdown,
+                  styles.overlay,
                   frameStyle,
                   animated && dropdownAnimatedStyle,
                 ]}
@@ -232,7 +218,7 @@ function Component<ItemT>(
       {...rootContainerProps}
       style={[rootContainerStyle, { position: "relative" }]}
     >
-      {_renderLabel}
+      {_renderTigger}
       {_renderModel()}
     </View>
   );
@@ -249,7 +235,7 @@ const styles = StyleSheet.create({
   modal: {
     flexGrow: 1,
   },
-  dropdown: {
+  overlay: {
     height: (33 + StyleSheet.hairlineWidth) * 4,
     position: 'absolute',
     borderWidth: StyleSheet.hairlineWidth,
@@ -257,7 +243,4 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     backgroundColor: '#ffffff',
   },
-  labelContainerDisabled: {
-    backgroundColor: '#fff',
-  }
 });

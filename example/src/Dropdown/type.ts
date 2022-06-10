@@ -10,6 +10,7 @@ import type {
   ViewStyle,
 } from 'react-native';
 import type { ModalProps } from 'react-native-modal';
+import { ModalHideReason, ModalShowReason } from "./reasons";
 
 export type Position = {
   width?: number;
@@ -22,11 +23,6 @@ export type Position = {
 export type Animations = {
   transitionShow: 'flipUp' | 'scaleIn' | 'fadeIn' | 'slideUp';
   transitionHide: 'flipDown' | 'scaleOut' | 'fadeOut' | 'slideDown';
-};
-
-export type UsePositionProps = {
-  heightSourceStyle: StyleProp<ViewStyle>[];
-  widthSourceStyle: StyleProp<ViewStyle>[];
 };
 
 export type UseAnimationPropsMeta = {
@@ -48,13 +44,15 @@ export type DropdownFlatListProps<ItemT extends string | number> = {
   index?: number;
   // 点击 item 后触发的回调
   onItemPress?: (info: { index: number, item?: ItemT }) => boolean | void | undefined;
-  // 选择某个元素后触发, 注意: 如果元素已被选中, 该回调不会触发, 而是触发 onAntiSelect, 这对于需要反选的场景很有效, 如果你只想处理点击事件, 那么请使用 onItemPress
+  // 仅在传入 index 时生效选择某个元素后触发
+  // 注意: 如果元素已被选中, 该回调不会触发, 而是触发 onAntiSelect, 这对于需要反选的场景很有效, 如果你只想处理点击事件, 那么请使用 onItemPress
   onSelect?: (info: { index: number, item?: ItemT }) => boolean | void | undefined;
-  // 反选某个元素后触发, 注意: 如果元素未被选中, 该回调不会触发, 而是触发 onSelect, 这对于需要反选的场景很有效, 如果你只想处理点击事件, 那么请使用 onItemPress
+  // 仅在传入 index 时生效反选某个元素后触发
+  // 注意: 如果元素未被选中, 该回调不会触发, 而是触发 onSelect, 这对于需要反选的场景很有效, 如果你只想处理点击事件, 那么请使用 onItemPress
   onAntiSelect?: (info: { index: number, item?: ItemT }) => boolean | void | undefined;
   // 数据源
   data: ReadonlyArray<ItemT>;
-  // 渲染
+  // 自定义渲染
   renderItem?: (info: {
     item: ItemT;
     index: number;
@@ -85,9 +83,9 @@ export type Props<ItemT> = {
   adjustFrame?: (position: Position) => Position;
 
   // 触发在 dropdown 显示之前，如果返回 false 则不显示 dropdown
-  onModalWillShow?: (info?: { item: ItemT; index: number }) => boolean | void;
+  onModalWillShow?: (reason: ModalShowReason) => boolean | void;
   // 触发在 dropdown 关闭之前，如果返回 false 则不关闭 dropdown
-  onModalWillHide?: (info?: { item: ItemT; index: number }) => boolean | void;
+  onModalWillHide?: (reason: ModalHideReason) => boolean | void;
 
   // 自定义任何样式/属性！！！
 

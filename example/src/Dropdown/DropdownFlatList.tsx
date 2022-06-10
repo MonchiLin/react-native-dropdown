@@ -1,6 +1,6 @@
 import { FlatList } from 'react-native';
 import React from 'react';
-import { DropdownFlatListItemProps, DropdownFlatListProps } from './type';
+import { DropdownFlatListProps } from './type';
 import { useModalDropdownContext } from './internal/context';
 import DropdownFlatListItem from './DropdownFlatListItem';
 import { KeepTouchable } from './internal/components';
@@ -20,7 +20,7 @@ export default function DropdownFlatList<T extends string | number>({
   const _onItemPress = (item, itemIndex) => {
     const info = { item, index: itemIndex };
     onItemPress?.(info);
-    context.onItemPress(info);
+    context.onRequestClose();
     if (index === itemIndex) {
       onAntiSelect?.(info);
     } else {
@@ -50,8 +50,8 @@ export default function DropdownFlatList<T extends string | number>({
       style={[
         props.style,
         {
-          width: context.overlaySize.width,
-          height: context.overlaySize.height,
+          width: context.triggerSize.width,
+          height: context.triggerSize.height,
         },
       ]}
     />

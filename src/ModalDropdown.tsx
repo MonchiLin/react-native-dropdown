@@ -209,7 +209,7 @@ function Component<ItemT>(
             disabled={!dropdownVisible}
             onPress={_onModalPress}
           >
-            <View style={styles.modal}>
+            <View>
               <Animated.View
                 style={[
                   styles.dropdown,
@@ -243,12 +243,6 @@ export default React.forwardRef(Component) as <T>(
 ) => JSX.Element;
 
 const styles = StyleSheet.create({
-  label: {
-    fontSize: 12,
-  },
-  modal: {
-    flexGrow: 1,
-  },
   dropdown: {
     height: (33 + StyleSheet.hairlineWidth) * 4,
     position: 'absolute',

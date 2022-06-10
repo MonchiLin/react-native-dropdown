@@ -39,19 +39,6 @@ const DATA_SOURCE2 = [
   '9st menu item',
 ];
 
-const ArrowDropDown = ({
-                         style,
-                       }: {
-  style: Animated.WithAnimatedValue<StyleProp<ImageStyle>>;
-}) => {
-  return (
-    <Animated.Image
-      source={require('../assets/arrow_drop_down.png')}
-      style={[{ width: 18, height: 18 }, style]}
-    />
-  );
-};
-
 const UserIcon = () => {
   return (
     <Image
@@ -70,6 +57,19 @@ const Divider = () => {
         backgroundColor: 'black',
         marginVertical: 10,
       }}
+    />
+  );
+};
+
+const ArrowDropDown = ({
+                         style,
+                       }: {
+  style: Animated.WithAnimatedValue<StyleProp<ImageStyle>>;
+}) => {
+  return (
+    <Animated.Image
+      source={require('../assets/arrow_drop_down.png')}
+      style={[{ width: 18, height: 18 }, style]}
     />
   );
 };

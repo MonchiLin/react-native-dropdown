@@ -1,10 +1,3 @@
-
-> - 本仓库最初代码 for 自 [react-native-modal-dropdown](https://github.com/sohobloo/react-native-modal-dropdown), 感谢原作者的启发.
-> - 为了兼容 React-Native-Web, 需要将 [react-native-modal](https://github.com/react-native-modal/react-native-modal) 添加至依赖中, 如果将来 React-Native-Web 支持 React Native 的原生 Modal 组件, 我将会保持现有的 Api, 并移除 [react-native-modal](https://github.com/react-native-modal/react-native-modal)
-> - 🙏 If you have a question, please start a new discussion instead of opening a new issue.
->
-
-
 ### This library is rewritten(fork) from [react-native-modal-dropdown](https://github.com/sohobloo/react-native-modal-dropdown)，感谢原作者。
 
 [![npm version](https://badge.fury.io/js/%40monchilin%2Fcountdown.svg)](https://badge.fury.io/js/%40monchilin%2Fcountdown)
