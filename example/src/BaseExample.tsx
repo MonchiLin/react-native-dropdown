@@ -1,7 +1,6 @@
-import Dropdown from './Dropdown';
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Image, ImageStyle, StyleProp, StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
-import DropdownFlatList from './Dropdown/DropdownFlatList';
+import { DropdownFlatList, ModalDropdown } from '@monchilin/react-native-dropdown';
 
 const DATA_SOURCE = [
   'option 1',
@@ -109,7 +108,7 @@ export default function BaseExample() {
       <Text style={styles.title}>Dropdown Examples</Text>
       <View style={styles.row}>
         <Text style={styles.label}>Basic Picker</Text>
-        <Dropdown
+        <ModalDropdown
           transitionShow={"flipUp"}
           transitionHide={"flipDown"}
           onModalWillShow={() => setVisibleState(true)}
@@ -206,7 +205,7 @@ export default function BaseExample() {
 
         {/*<Divider/>*/}
         <Text style={styles.label}>Custom Render Item</Text>
-        <Dropdown
+        <ModalDropdown
           Overlay={
             <DropdownFlatList
               onSelect={({ index }) => updateIndex(index)}

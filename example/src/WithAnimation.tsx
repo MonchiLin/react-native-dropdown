@@ -1,7 +1,6 @@
-import Dropdown from './Dropdown';
+import { ModalDropdown, DropdownFlatList } from '@monchilin/react-native-dropdown';
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import DropdownFlatList from "./Dropdown/DropdownFlatList";
 
 const DEMO_OPTIONS_1 = [
   'option 1',
@@ -31,7 +30,7 @@ export default function WithAnimation() {
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        <Dropdown
+        <ModalDropdown
           Trigger={props => <TouchableOpacity onPress={props.onPress}>
             <Text style={{ color: '#60c8f6' }}>
               click to change transitionShow current is [
@@ -46,7 +45,7 @@ export default function WithAnimation() {
             />
           }
         />
-        <Dropdown
+        <ModalDropdown
           Overlay={
             <DropdownFlatList
               index={transitionHiddenIndex}
@@ -70,7 +69,7 @@ export default function WithAnimation() {
             marginVertical: 20,
           }}
         />
-        <Dropdown
+        <ModalDropdown
           transitionShow={showAnimations[transitionShowIndex]}
           transitionHide={hiddenAnimations[transitionHiddenIndex]}
           Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}

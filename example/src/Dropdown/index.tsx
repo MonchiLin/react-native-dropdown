@@ -1,4 +1,12 @@
-import ModelDropdown from './ModalDropdown';
+import ModalDropdown from './ModalDropdown';
+import DropdownFlatListItem from "./DropdownFlatListItem";
+import DropdownFlatList from "./DropdownFlatList";
+
+export {
+  ModalDropdown,
+  DropdownFlatListItem,
+  DropdownFlatList
+}
 
 export type {
   Props as ModalDropdownProps,
@@ -7,4 +15,3 @@ export type {
   Animations as ModalAnimations,
 } from './type';
 
-export default ModelDropdown;

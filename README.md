@@ -4,6 +4,11 @@
 > - 🙏 If you have a question, please start a new discussion instead of opening a new issue.
 >
 
+## 教程
+
+请先花五分钟看完这段话, 这对于使用和对该组件二次开发是很有帮助的, 首先必须要了解两个概念 `Trigger` 和 `Overlay`, `Dropdown` 组件由
+
+
 
 ### This library is rewritten(fork) from [react-native-modal-dropdown](https://github.com/sohobloo/react-native-modal-dropdown)，感谢原作者。
 

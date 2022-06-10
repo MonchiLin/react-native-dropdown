@@ -1,9 +1,6 @@
-import ModalDropdown, {
-  ModalDropdownHandles,
-} from './Dropdown';
 import React, { useRef } from 'react';
 import { Button, StyleSheet, View } from 'react-native';
-import DropdownFlatList from "./Dropdown/DropdownFlatList";
+import { DropdownFlatList, ModalDropdown, ModalDropdownHandles } from '@monchilin/react-native-dropdown';
 
 const DEMO_OPTIONS_1 = [
   'option 1',

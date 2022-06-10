@@ -12,6 +12,7 @@ import type {
 import type { ModalProps } from 'react-native-modal';
 import { ModalHideReason, ModalShowReason } from "./reasons";
 import { GestureResponderEvent } from "react-native";
+import * as React from "react";
 
 export type Position = {
   top: number;
@@ -36,6 +37,10 @@ export type UseAnimationProps = {
   transitionHide: Animations['transitionHide'];
   getContext: () => UseAnimationContext;
 };
+
+export type DropdownButtonTriggerProps = {
+  children: React.ReactNode | string
+}
 
 export type DropdownFlatListProps<ItemT extends string | number> = {
   // 默认高亮的索引

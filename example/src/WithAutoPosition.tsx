@@ -1,7 +1,6 @@
-import Dropdown from './Dropdown';
+import { ModalDropdown, DropdownFlatList } from '@monchilin/react-native-dropdown';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import DropdownFlatList from "./Dropdown/DropdownFlatList";
 
 const DEMO_OPTIONS_1 = [
   'option 1',
@@ -20,13 +19,13 @@ export default function WithAutoPosition() {
     <View style={styles.container}>
       <View style={styles.row}>
         <View style={styles.cell}>
-          <Dropdown
+          <ModalDropdown
             Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
             Trigger={'upper left corner'}
           />
         </View>
         <View style={[styles.cell, { alignItems: 'flex-end' }]}>
-          <Dropdown
+          <ModalDropdown
             Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
             Trigger={'upper right corner'}
           />
@@ -34,7 +33,7 @@ export default function WithAutoPosition() {
       </View>
       <View style={[styles.row]}>
         <View style={[styles.cell, { justifyContent: 'flex-end' }]}>
-          <Dropdown
+          <ModalDropdown
             Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
             Trigger={'lower left corner'}
           />
@@ -45,7 +44,7 @@ export default function WithAutoPosition() {
             { alignItems: 'flex-end', justifyContent: 'flex-end' },
           ]}
         >
-          <Dropdown
+          <ModalDropdown
             Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
             Trigger={'lower right corner'}
           />

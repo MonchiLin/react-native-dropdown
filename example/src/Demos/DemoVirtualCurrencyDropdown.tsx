@@ -1,7 +1,7 @@
-import Dropdown from './Dropdown';
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, ImageStyle, StyleProp, StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
-import DropdownFlatList from "./Dropdown/DropdownFlatList";
+import ModelDropdown from "@monchilin/react-native-dropdown";
+import { DropdownFlatList } from "@monchilin/react-native-dropdown";
 
 const DATA_SOURCE = ['BNA', 'USDI', 'SHUIBI', 'ATC', 'CTC'];
 
@@ -45,7 +45,7 @@ export default function DemoVirtualCurrencyDropdown() {
   });
 
   return (
-    <Dropdown
+    <ModelDropdown
       onModalWillHide={() => setVisibleState(true)}
       onModalWillShow={() => setVisibleState(false)}
       Overlay={<DropdownFlatList

@@ -15,6 +15,7 @@ import { id, truth } from './internal/utils';
 import { useAnimation, useBorderWidth, useEffectWithSkipFirst } from './internal/hooks';
 import { ModalDropdownProvider } from './internal/context';
 import { ModalHideReason, ModalShowReason } from "./reasons";
+import DropdownButtonTrigger from "./DropdownButtonTrigger";
 
 function Component<ItemT>(
   {
