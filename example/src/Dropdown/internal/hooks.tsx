@@ -1,6 +1,7 @@
-import { UseAnimationContext, UseAnimationProps, } from '../type';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Size, UseAnimationParams, } from '../type';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Easing, StyleProp, StyleSheet, ViewStyle } from 'react-native';
+import { useModalDropdownContext } from "@monchilin/react-native-dropdown";
 
 export const useEffectWithSkipFirst = (
   callback: React.EffectCallback,
@@ -73,7 +74,7 @@ const transitions = {
   fadeIn: {
     config: {
       toValue: 1,
-      duration: 300,
+      duration: 200,
       useNativeDriver: true,
     },
     interpolate: () => ({
@@ -86,7 +87,7 @@ const transitions = {
   fadeOut: {
     config: {
       toValue: 0,
-      duration: 300,
+      duration: 200,
       useNativeDriver: true,
     },
     interpolate: () => ({
@@ -101,11 +102,11 @@ const transitions = {
       toValue: 100,
       useNativeDriver: false,
     },
-    interpolate: (meta: UseAnimationContext) => ({
+    interpolate: (size: Size) => ({
       inputRange: [0, 100],
       duration: 300,
       easing: Easing.in,
-      outputRange: [0, meta.triggerHeight],
+      outputRange: [0, size.height],
     }),
     initialValue: 0,
     animationType: 'timing',
@@ -115,11 +116,11 @@ const transitions = {
       toValue: 0,
       useNativeDriver: false,
     },
-    interpolate: (meta: UseAnimationContext) => ({
+    interpolate: (size: Size) => ({
       inputRange: [0, 100],
       duration: 300,
       easing: Easing.sin,
-      outputRange: [0, meta.triggerHeight],
+      outputRange: [0, size.height],
     }),
     initialValue: 100,
     animationType: 'timing',
@@ -130,17 +131,17 @@ export const useAnimation = ({
                                visible,
                                transitionHide,
                                transitionShow,
-                               getContext,
-                             }: UseAnimationProps) => {
+                             }: UseAnimationParams) => {
   const [state, setState] = useState(false);
   const anim = useRef(new Animated.Value(90)).current;
   const [style, setStyle] = useState({});
+  const context = useModalDropdownContext()
 
   useEffectWithSkipFirst(() => {
     if (visible) {
       const transitionShowConfig = transitions[transitionShow];
       const interpolate = anim.interpolate(
-        transitionShowConfig.interpolate(getContext())
+        transitionShowConfig.interpolate(context.triggerSize)
       );
       anim.setValue(transitionShowConfig.initialValue);
       setState(true);
@@ -169,7 +170,7 @@ export const useAnimation = ({
     } else {
       const transitionHideConfig = transitions[transitionHide];
       const interpolate = anim.interpolate(
-        transitionHideConfig.interpolate(getContext())
+        transitionHideConfig.interpolate(context.triggerSize)
       );
       anim.setValue(transitionHideConfig.initialValue);
 

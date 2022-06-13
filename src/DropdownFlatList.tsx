@@ -1,9 +1,9 @@
 import { FlatList } from 'react-native';
 import React from 'react';
-import { DropdownFlatListItemProps, DropdownFlatListProps } from './type';
 import { useModalDropdownContext } from './internal/context';
 import DropdownFlatListItem from './DropdownFlatListItem';
 import { KeepTouchable } from './internal/components';
+import type { DropdownFlatListProps } from "./type";
 
 export default function DropdownFlatList<T extends string | number>({
                                                                       data,
@@ -17,7 +17,7 @@ export default function DropdownFlatList<T extends string | number>({
                                                                     }: DropdownFlatListProps<T>) {
   const context = useModalDropdownContext();
 
-  const _onItemPress = (item, itemIndex) => {
+  const _onItemPress = (item: T, itemIndex: number) => {
     const info = { item, index: itemIndex };
     onItemPress?.(info);
     context.onItemPress(info);
@@ -32,11 +32,15 @@ export default function DropdownFlatList<T extends string | number>({
     <FlatList
       scrollEnabled={true}
       data={data}
-      keyExtractor={(item, index) => index.toString()}
+      keyExtractor={(_, index) => index.toString()}
       renderItem={({ index: itemIndex, item }) => {
         const isActive = itemIndex === index;
         if (typeof renderItem === "function") {
-          return KeepTouchable(renderItem({ item, index, isActive }), { onPress: () => _onItemPress(item, itemIndex) });
+          return KeepTouchable(renderItem({
+            item,
+            index: itemIndex,
+            isActive
+          }), { onPress: () => _onItemPress(item, itemIndex) });
         } else {
           return <DropdownFlatListItem
             item={item}
@@ -51,7 +55,6 @@ export default function DropdownFlatList<T extends string | number>({
         props.style,
         {
           width: context.overlaySize.width,
-          height: context.overlaySize.height,
         },
       ]}
     />

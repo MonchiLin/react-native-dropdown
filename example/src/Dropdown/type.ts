@@ -1,24 +1,25 @@
-import type {
-  FlatListProps,
-  StyleProp,
-  TextProps,
-  TouchableHighlightProps,
-  TouchableNativeFeedbackProps,
-  TouchableOpacityProps,
-  TouchableWithoutFeedbackProps,
-  ViewProps,
-  ViewStyle,
-} from 'react-native';
+import type { FlatListProps, GestureResponderEvent, StyleProp, ViewProps, ViewStyle, TextStyle } from 'react-native';
 import type { ModalProps } from 'react-native-modal';
-import { ModalHideReason, ModalShowReason } from "./reasons";
-import { GestureResponderEvent } from "react-native";
-import * as React from "react";
+import type { ModalHideReason, ModalShowReason } from "./reasons";
+import type { ReactNode } from "react";
 
 export type Position = {
-  top: number;
+  top?: number;
   left?: number;
   right?: number;
   bottom?: number;
+};
+
+export type Frame = {
+  x?: number;
+  y?: number;
+  w?: number;
+  h?: number;
+};
+
+export type Size = {
+  width: number;
+  height: number;
 };
 
 export type Animations = {
@@ -26,21 +27,11 @@ export type Animations = {
   transitionHide: 'flipDown' | 'scaleOut' | 'fadeOut' | 'slideDown';
 };
 
-export type UseAnimationContext = {
-  triggerWidth: number;
-  triggerHeight: number;
-};
-
-export type UseAnimationProps = {
+export type UseAnimationParams = {
   visible: boolean;
   transitionShow: Animations['transitionShow'];
   transitionHide: Animations['transitionHide'];
-  getContext: () => UseAnimationContext;
 };
-
-export type DropdownButtonTriggerProps = {
-  children: React.ReactNode | string
-}
 
 export type DropdownFlatListProps<ItemT extends string | number> = {
   // 默认高亮的索引
@@ -67,18 +58,43 @@ export type DropdownFlatListProps<ItemT extends string | number> = {
   'data' | 'renderItem'>;
 
 export type DropdownFlatListItemProps = {
-  item: string | number;
+  label: string | number;
   // 是否处于选中状态
   isActive?: boolean,
-  // 选中状态下的 item 的样式
-  activeStyle?: StyleProp<ViewStyle>;
-} & Omit<TextProps, 'children'>;
+  // 容器样式
+  contentContainerStyle?: StyleProp<ViewStyle>,
+  // 选中状态下容器样式
+  activeContentContainerStyle?: StyleProp<ViewStyle>;
+  // label 样式
+  labelStyle?: StyleProp<TextStyle>;
+  // 选中状态下 label 样式
+  activeLabelStyle?: StyleProp<TextStyle>;
+  // 点击事件
+  onPress: (event: GestureResponderEvent) => void
+};
+
+type DropdownButtonPropsBase = {
+  contentContainerStyle?: StyleProp<ViewStyle>
+  disabled?: boolean
+}
+
+export type DropdownButtonProps = DropdownButtonPropsBase
+  & (
+  { label: string, Icon?: ReactNode, labelStyle?: StyleProp<TextStyle> }
+  | { children: ReactNode }
+  )
+
+export type ModalDropdownPlacement =
+  "bottomLeft"
+  | "bottomCenter"
+  | "bottomRight"
+  | "topLeft"
+  | "topCenter"
+  | "topRight"
 
 export type Props<ItemT> = {
   // 是否显示
   visible?: boolean;
-  // 是否禁止点击 label 弹出 dropdown
-  disabled?: boolean;
   // 是否启动 dropdown 动画
   animated?: boolean;
   // 显示时的动画效果
@@ -94,7 +110,8 @@ export type Props<ItemT> = {
   // 触发在 dropdown 关闭之前，如果返回 false 则不关闭 dropdown
   onModalWillHide?: (reason: ModalHideReason) => boolean | void;
 
-  // 自定义任何样式/属性！！！
+  // 位置
+  placement?: ModalDropdownPlacement
 
   // 根容器相关
   // 根容器的样式
@@ -104,15 +121,8 @@ export type Props<ItemT> = {
   // Modal 相关
   modalProps?: Partial<Omit<ModalProps, 'isVisible' | 'onBackButtonPress' | 'children' | 'animationIn' | 'animationOut' | 'animationInTiming' | 'animationOutTiming'>>;
 
-  // 包裹 item 的 touchable 的 props
-  itemTouchableProps?: Omit<| TouchableOpacityProps
-    | TouchableHighlightProps
-    | TouchableNativeFeedbackProps
-    | TouchableWithoutFeedbackProps,
-    'onPress'>;
-
   // 触发 Dropdown 的元素
-  Trigger: ((props: { onPress: (event: GestureResponderEvent) => void }) => JSX.Element) | string;
+  Trigger: ReactNode | string;
   // 触发 Dropdown 后弹出的元素
   Overlay: JSX.Element | JSX.Element[];
 };

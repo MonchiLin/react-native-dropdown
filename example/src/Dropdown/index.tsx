@@ -1,11 +1,13 @@
 import ModalDropdown from './ModalDropdown';
 import DropdownFlatListItem from "./DropdownFlatListItem";
 import DropdownFlatList from "./DropdownFlatList";
+import { useModalDropdownContext } from "./context";
 
 export {
   ModalDropdown,
   DropdownFlatListItem,
-  DropdownFlatList
+  DropdownFlatList,
+  useModalDropdownContext
 }
 
 export type {

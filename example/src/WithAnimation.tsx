@@ -31,7 +31,7 @@ export default function WithAnimation() {
     <View style={styles.container}>
       <View style={styles.row}>
         <ModalDropdown
-          Trigger={props => <TouchableOpacity onPress={props.onPress}>
+          Trigger={<TouchableOpacity>
             <Text style={{ color: '#60c8f6' }}>
               click to change transitionShow current is [
               {showAnimations[transitionShowIndex]}]
@@ -55,7 +55,7 @@ export default function WithAnimation() {
               data={hiddenAnimations}
             />
           }
-          Trigger={props => <Text onPress={props.onPress} style={{ color: '#60c8f6' }}>
+          Trigger={<Text style={{ color: '#60c8f6' }}>
             click to change transitionShow current is [
             {hiddenAnimations[transitionHiddenIndex]}]
           </Text>

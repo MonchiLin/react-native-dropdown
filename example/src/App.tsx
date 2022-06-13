@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { StatusBar, StyleSheet, Text, View } from 'react-native';
 import WithAnimation from './WithAnimation';
 import WithAutoPosition from './WithAutoPosition';
 import BaseExample from './BaseExample';
 import WithImperative from './WithImperative';
-import { ModalDropdown } from '@monchilin/react-native-dropdown/';
+import { ModalDropdown } from '@monchilin/react-native-dropdown';
 import DropdownFlatList from "./Dropdown/DropdownFlatList";
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const Features = {
   WithAnimation: WithAnimation,
@@ -22,16 +23,23 @@ export default function App() {
   const Component = Features[FeatureLabels[exampleIndex]];
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.focus}>
-        <Text>current demo:</Text>
-        <ModalDropdown
-          Trigger={FeatureLabels[exampleIndex]}
-          Overlay={<DropdownFlatList data={FeatureLabels} onSelect={({ index }) => updateExampleIndex(index)}/>}
-        />
-      </View>
-      <Component/>
-    </SafeAreaView>
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.focus}>
+          <Text>current demo:</Text>
+          <ModalDropdown
+            Trigger={FeatureLabels[exampleIndex]}
+            Overlay={
+              <DropdownFlatList
+                data={FeatureLabels}
+                onSelect={({ index }) => updateExampleIndex(index)}
+              />
+            }
+          />
+        </View>
+        <Component/>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
