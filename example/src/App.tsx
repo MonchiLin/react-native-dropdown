@@ -1,40 +1,34 @@
 import React, { useState } from 'react';
-import { StatusBar, StyleSheet, Text, View } from 'react-native';
-import WithAnimation from './WithAnimation';
-import WithAutoPosition from './WithAutoPosition';
-import BaseExample from './BaseExample';
-import WithImperative from './WithImperative';
-import { ModalDropdown } from '@monchilin/react-native-dropdown';
-import DropdownFlatList from "./Dropdown/DropdownFlatList";
+import { StyleSheet, View, Text } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import FeaturesScreen from "./Feature/Features";
+import DemosScreen from "./Demos/Demos";
+import { DropdownButton, DropdownFlatList, ModalDropdown } from "@monchilin/react-native-dropdown";
 
-const Features = {
-  WithAnimation: WithAnimation,
-  WithAutoPosition: WithAutoPosition,
-  BaseExample: BaseExample,
-  WithImperative: WithImperative,
+const Views = {
+  FeaturesScreen: FeaturesScreen,
+  DemosScreen: DemosScreen,
 };
 
-const FeatureLabels = Object.keys(Features) as (keyof typeof Features)[];
+const ViewLabels = Object.keys(Views) as (keyof typeof Views)[];
 
 export default function App() {
-  const [exampleIndex, updateExampleIndex] = useState(2);
+  const [viewIndex, updateExampleIndex] = useState(0);
 
-  const Component = Features[FeatureLabels[exampleIndex]];
+  const Component = Views[ViewLabels[viewIndex]];
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.focus}>
-          <Text>current demo:</Text>
+          <Text>current view:</Text>
           <ModalDropdown
-            Trigger={FeatureLabels[exampleIndex]}
-            Overlay={
-              <DropdownFlatList
-                data={FeatureLabels}
-                onSelect={({ index }) => updateExampleIndex(index)}
-              />
+            Overlay={<DropdownFlatList
+              index={viewIndex}
+              onItemPress={({ index }) => updateExampleIndex(index)}
+              data={ViewLabels}/>
             }
+            Trigger={<DropdownButton label={ViewLabels[viewIndex]}/>}
           />
         </View>
         <Component/>

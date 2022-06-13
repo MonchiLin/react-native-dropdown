@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Image, ImageStyle, StyleProp, StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
 import { DropdownFlatList, ModalDropdown } from '@monchilin/react-native-dropdown';
-import DropdownButton from "./Dropdown/DropdownButton";
+import { DropdownButton } from "@monchilin/react-native-dropdown";
 
 const DATA_SOURCE = [
   'option 1',
@@ -29,20 +29,20 @@ const DATA_SOURCE1 = [
 
 const DATA_SOURCE2 = [
   '1st menu item',
-  '2st menu item',
-  '3st menu item',
-  '4st menu item',
-  '5st menu item',
-  '6st menu item',
-  '7st menu item',
-  '8st menu item',
-  '9st menu item',
+  '2se menu item',
+  '3rd menu item',
+  '4th menu item',
+  '5th menu item',
+  '6th menu item',
+  '7th menu item',
+  '8th menu item',
+  '9th menu item',
 ];
 
 const UserIcon = () => {
   return (
     <Image
-      source={require('../assets/user_icon.png')}
+      source={require('../../assets/user_icon.png')}
       style={{ width: 18, height: 18 }}
     />
   );
@@ -68,7 +68,7 @@ const ArrowDropDown = ({
 }) => {
   return (
     <Animated.Image
-      source={require('../assets/arrow_drop_down.png')}
+      source={require('../../assets/arrow_drop_down.png')}
       style={[{ width: 18, height: 18 }, style]}
     />
   );

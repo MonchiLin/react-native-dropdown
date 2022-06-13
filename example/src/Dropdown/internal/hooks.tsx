@@ -1,7 +1,7 @@
 import { Size, UseAnimationParams, } from '../type';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Easing, StyleProp, StyleSheet, ViewStyle } from 'react-native';
-import { useModalDropdownContext } from "@monchilin/react-native-dropdown";
+import { useModalDropdownContext } from "../context";
 
 export const useEffectWithSkipFirst = (
   callback: React.EffectCallback,

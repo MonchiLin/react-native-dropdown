@@ -1,22 +1,46 @@
-import type { FlatListProps, GestureResponderEvent, StyleProp, ViewProps, ViewStyle, TextStyle } from 'react-native';
+import type { FlatListProps, GestureResponderEvent, StyleProp, TextStyle, ViewProps, ViewStyle } from 'react-native';
 import type { ModalProps } from 'react-native-modal';
 import type { ModalHideReason, ModalShowReason } from "./reasons";
 import type { ReactNode } from "react";
 
-export type Position = {
+export type Context = {
+  // trigger 自身的尺寸
+  triggerSize: { height: number, width: number },
+  // 相较于 trigger 的安全区域
+  // left: 从 trigger 左侧到屏幕可视区域左侧的位置
+  // right: 从 trigger 左侧到可视区域右侧的位置
+  // bottom: 从 trigger 左侧到可视区域底部的位置
+  // top: 从 trigger 顶部到可视区域顶部的位置
+  triggerPosition: EdgeInsets,
+  // 可视区域, 该参数一般通过 safeArea 相关的库获取, 例如 https://github.com/th3rdwave/react-native-safe-area-context#usesafeareainsets
+  safeArea?: EdgeInsets,
+  // 准备关闭 overlay
+  onRequestClose: () => void
+  // 显示 overlay
+  show: () => void
+  // 隐藏 overlay
+  hide: () => void
+  // 当前 overlay 是否可见
+  visible: boolean
+}
+
+// 相对于左上角的位置和大小
+export type EdgeInsets = {
   top?: number;
   left?: number;
   right?: number;
   bottom?: number;
 };
 
-export type Frame = {
+// 相对于左上角的位置和大小
+export type Bounds = {
   x?: number;
   y?: number;
   w?: number;
   h?: number;
 };
 
+// 宽高
 export type Size = {
   width: number;
   height: number;
@@ -92,7 +116,9 @@ export type ModalDropdownPlacement =
   | "topCenter"
   | "topRight"
 
-export type Props<ItemT> = {
+export type Props = {
+  // 可视区域, 该参数一般通过 safeArea 相关的库获取, 例如 https://github.com/th3rdwave/react-native-safe-area-context#usesafeareainsets
+  safeArea?: EdgeInsets
   // 是否显示
   visible?: boolean;
   // 是否启动 dropdown 动画
@@ -103,7 +129,7 @@ export type Props<ItemT> = {
   transitionHide?: Animations['transitionHide'];
 
   // 每次更新 Modal 位置之前触发的回调函数，如果需要自定义 Modal 位置，则返回符合 Position 类型的对象即可
-  adjustFrame?: (position: Position) => Position;
+  adjustFrame?: (position: EdgeInsets) => EdgeInsets;
 
   // 触发在 dropdown 显示之前，如果返回 false 则不显示 dropdown
   onModalWillShow?: (reason: ModalShowReason) => boolean | void;

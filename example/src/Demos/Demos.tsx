@@ -3,30 +3,31 @@ import { SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import DemoVirtualCurrencyDropdown from './DemoVirtualCurrencyDropdown';
 import { ModalDropdown } from "@monchilin/react-native-dropdown";
 import DropdownFlatList from "../Dropdown/DropdownFlatList";
+import DemoFilters from "./DemoFilters";
 
 const DEMOS = {
-  DemoVirtualCurrencyDropdown: DemoVirtualCurrencyDropdown,
+  VirtualCurrencyDropdown: DemoVirtualCurrencyDropdown,
+  Filter: DemoFilters,
 };
 
 const DEMO_LABELS = Object.keys(DEMOS) as (keyof typeof DEMOS)[];
 
-export default function Demos() {
-  const [demoIndex, updateDemoIndex] = useState(2);
+export default function DemosScreen() {
+  const [demoIndex, updateDemoIndex] = useState(1);
 
   const Component = DEMOS[DEMO_LABELS[demoIndex]];
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar/>
+    <View style={{ flex: 1 }}>
+      <Component/>
       <View style={styles.focus}>
         <Text>current demo:</Text>
         <ModalDropdown
           Trigger={DEMO_LABELS[demoIndex]}
-          Overlay={<DropdownFlatList data={DEMO_LABELS} onSelect={({ index }) => updateDemoIndex(index)}/>}
+          Overlay={<DropdownFlatList style={{ width: 100 }} data={DEMO_LABELS} onSelect={({ index }) => updateDemoIndex(index)}/>}
         />
       </View>
-      <Component/>
-    </SafeAreaView>
+    </View>
   );
 }
 

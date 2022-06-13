@@ -1,7 +1,6 @@
 import React from 'react';
-import { DropdownFlatListItemProps } from './type';
-import { useModalDropdownContext } from './internal/context';
 import { Text, TouchableOpacity } from 'react-native';
+import type { DropdownFlatListItemProps } from "./type";
 
 export default function DropdownFlatListItem({
                                                item,
@@ -9,7 +8,7 @@ export default function DropdownFlatListItem({
                                                onPress,
                                                ...props
                                              }: DropdownFlatListItemProps) {
-  const context = useModalDropdownContext();
+
   return <TouchableOpacity onPress={onPress}>
     <Text style={[props.style, activeStyle]}>{item}</Text>
   </TouchableOpacity>;

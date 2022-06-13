@@ -28,10 +28,15 @@ export default function DropdownFlatList<T extends string | number>(
     } else {
       onSelect?.(info);
     }
-  }
+  };
 
   return (
-    <View style={[style.shadow]}>
+    <View style={[
+      style.shadow,
+      {
+        width: context.triggerSize.width,
+      }
+    ]}>
       <FlatList
         scrollEnabled={true}
         data={data}
@@ -39,7 +44,11 @@ export default function DropdownFlatList<T extends string | number>(
         renderItem={({ index: itemIndex, item }) => {
           const isActive = itemIndex === index;
           if (typeof renderItem === "function") {
-            return KeepTouchable(renderItem({ item, index, isActive }), { onPress: () => _onItemPress(item, itemIndex) });
+            return KeepTouchable(renderItem({
+              item,
+              index,
+              isActive
+            }), { onPress: () => _onItemPress(item, itemIndex) });
           } else {
             return <DropdownFlatListItem
               label={item}
@@ -52,11 +61,7 @@ export default function DropdownFlatList<T extends string | number>(
         {...props}
         style={[
           {
-            borderWidth: StyleSheet.hairlineWidth,
-            borderColor: 'lightgray',
-            borderRadius: 2,
             backgroundColor: '#ffffff',
-            width: context.triggerSize.width,
             height: windowDimensions.height / 5,
           },
           { width: "auto" },
@@ -72,8 +77,8 @@ const style = StyleSheet.create({
     shadowColor: "#6b6b6b",
 
     shadowOpacity: 0.26,
-    shadowOffset: { width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowRadius: 10,
     elevation: 10,
   }
-})
+});

@@ -2,15 +2,16 @@ import React, { useCallback, useImperativeHandle, useMemo, useRef, useState, } f
 import { Animated, LayoutChangeEvent, Text, TouchableWithoutFeedback, useWindowDimensions, View } from 'react-native';
 
 import Modal from 'react-native-modal';
-import type { Handles, Position, Props } from './type';
+import type { EdgeInsets, Bounds, Handles, Props } from './type';
 import { id, truth } from './internal/utils';
 import { useAnimation, useBorderWidth, useEffectWithSkipFirst } from './internal/hooks';
 import { ModalDropdownProvider } from './context';
 import { ModalHideReason, ModalShowReason } from "./reasons";
 import { KeepTouchable } from "./internal/components";
 
-function Component<ItemT>(
+function Component(
   {
+    safeArea,
     visible,
     animated = true,
     placement = "bottomCenter",
@@ -24,15 +25,15 @@ function Component<ItemT>(
     modalProps = {},
     Trigger,
     Overlay,
-  }: Props<ItemT>,
+  }: Props,
   ref: React.Ref<any>
 ) {
   const windowDimensions = useWindowDimensions();
 
   const triggerRef = useRef<View>(null);
   const overlayRef = useRef<View>(null);
-  const [triggerFrame, setTriggerFrame] = useState({ x: 0, y: 0, w: 0, h: 0 });
-  const [overlayFrame, setOverlayFrame] = useState({ x: 0, y: 0, w: 0, h: 0 });
+  const [triggerBounds, setTriggerBounds] = useState<Bounds>({ x: 0, y: 0, w: 0, h: 0 });
+  const [overlayBounds, setOverlayBounds] = useState<Bounds>({ x: 0, y: 0, w: 0, h: 0 });
   const [overlayVisible, setOverlayVisible] = useState(!!visible);
 
   const hide = useCallback(() => {
@@ -45,9 +46,9 @@ function Component<ItemT>(
 
   useEffectWithSkipFirst(() => {
     if (visible) {
-      _onRequestOpen(ModalShowReason.VisibleStateChange);
+      setOverlayVisible(true);
     } else {
-      _onRequestClose(ModalHideReason.VisibleStateChange);
+      setOverlayVisible(false);
     }
   }, [visible]);
 
@@ -74,7 +75,7 @@ function Component<ItemT>(
       return;
     }
     triggerRef.current.measure((_fx, _fy, width, height, px, py) => {
-      setTriggerFrame({ x: px, y: py, w: width, h: height });
+      setTriggerBounds({ x: px, y: py, w: width, h: height });
     });
   };
 
@@ -83,7 +84,7 @@ function Component<ItemT>(
       return;
     }
     triggerRef.current.measure((_fx, _fy, width, height, px, py) => {
-      setOverlayFrame({ x: px, y: py, w: width, h: height });
+      setOverlayBounds({ x: px, y: py, w: width, h: height });
     });
   };
 
@@ -101,13 +102,13 @@ function Component<ItemT>(
 
   const frameStyle = useMemo(() => {
     // 首先根据 style 的对象获取 dropdown 容器的高度
-    const dropdownHeight = triggerFrame.h;
+    const dropdownHeight = triggerBounds.h;
 
     // x: 按钮的 x 点（相对于屏幕左上角）
     // y: 按钮的 y 点（相对于屏幕顶点）
     // w: 按钮的 width
     // h: 按钮的 height
-    const { x, y, w, h } = triggerFrame;
+    const { x, y, w, h } = triggerBounds;
 
     // 距离底部的空间
     const buttonSpace = windowDimensions.height - y - h;
@@ -116,7 +117,7 @@ function Component<ItemT>(
     // 如果距离底部的空间大于等于 dropdown 的高度 或者 底部空间
     const showInBottom = buttonSpace >= dropdownHeight || buttonSpace >= y;
     const showInLeft = rightSpace >= x;
-    const positionStyle: Position = {
+    const positionStyle: EdgeInsets = {
       top: showInBottom ? y + h : Math.max(0, y - dropdownHeight),
     };
 
@@ -127,7 +128,7 @@ function Component<ItemT>(
     }
 
     return adjustFrame(positionStyle);
-  }, [adjustFrame, triggerFrame, windowDimensions]);
+  }, [adjustFrame, triggerBounds, windowDimensions]);
 
   const _renderTrigger = useMemo(() => {
     if (typeof Trigger === "function") {
@@ -135,7 +136,7 @@ function Component<ItemT>(
     } else if (typeof Trigger === "object") {
       return Trigger;
     } else {
-      return <Text onPress={() => _onRequestOpen(ModalShowReason.ClickTrigger)}>{Trigger}</Text>;
+      return <Text style={{ color: "#2d8cfe" }} onPress={() => _onRequestOpen(ModalShowReason.ClickTrigger)}>{Trigger}</Text>;
     }
   }, [Trigger]);
 
@@ -179,31 +180,30 @@ function Component<ItemT>(
 
   const triggerSize = useMemo(() => {
     return {
-      width: triggerFrame.w === undefined
+      width: triggerBounds.w === undefined
         ? undefined
         // 减去水平边框, 这样可以精确的计算 Trigger 的宽度
-        : triggerFrame.w - borderWidthState.w,
-      height: triggerFrame.h === undefined
+        : triggerBounds.w - borderWidthState.w,
+      height: triggerBounds.h === undefined
         ? undefined
         // 减去垂直边框, 这样可以精确的计算 Trigger 的宽度
-        : triggerFrame.h - borderWidthState.h,
+        : triggerBounds.h - borderWidthState.h,
     };
-  }, [triggerFrame]);
+  }, [triggerBounds]);
 
-  const safeSize = useMemo<Position>(() => {
+  const triggerPosition = useMemo<EdgeInsets>(() => {
     return {
-      left: triggerFrame.x,
-      right: triggerFrame.x,
-      top: triggerFrame.y,
-      bottom: triggerFrame.y,
+      left: triggerBounds.x,
+      top: triggerBounds.y,
     };
-  }, [triggerFrame]);
+  }, [triggerBounds, triggerSize]);
 
   return (
     <ModalDropdownProvider
       value={{
         triggerSize: triggerSize,
-        safeSize: safeSize,
+        triggerPosition: triggerPosition,
+        safeArea: safeArea,
         onRequestClose: () => _onRequestClose(ModalHideReason.ClickOverlayInside),
         visible: overlayVisible,
         show: show,
@@ -223,7 +223,7 @@ function Component<ItemT>(
   );
 }
 
-export default React.forwardRef(Component) as <T>(
-  p: Props<T> & { ref?: React.Ref<Handles> }
+export default React.forwardRef(Component) as (
+  p: Props & { ref?: React.Ref<Handles> }
 ) => JSX.Element;
 
