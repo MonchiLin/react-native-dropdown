@@ -1,4 +1,7 @@
-import { ModalDropdown, DropdownFlatList } from '@monchilin/react-native-dropdown';
+import {
+  ModalDropdown,
+  DropdownFlatList,
+} from '@monchilin/react-native-dropdown';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
@@ -20,13 +23,13 @@ export default function WithAutoPosition() {
       <View style={styles.row}>
         <View style={styles.cell}>
           <ModalDropdown
-            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
+            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1} />}
             Trigger={'upper left corner'}
           />
         </View>
         <View style={[styles.cell, { alignItems: 'flex-end' }]}>
           <ModalDropdown
-            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
+            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1} />}
             Trigger={'upper right corner'}
           />
         </View>
@@ -34,7 +37,7 @@ export default function WithAutoPosition() {
       <View style={[styles.row]}>
         <View style={[styles.cell, { justifyContent: 'flex-end' }]}>
           <ModalDropdown
-            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
+            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1} />}
             Trigger={'lower left corner'}
           />
         </View>
@@ -45,7 +48,7 @@ export default function WithAutoPosition() {
           ]}
         >
           <ModalDropdown
-            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
+            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1} />}
             Trigger={'lower right corner'}
           />
         </View>

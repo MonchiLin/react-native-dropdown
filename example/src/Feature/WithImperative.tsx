@@ -1,6 +1,10 @@
 import React, { useRef } from 'react';
 import { Button, StyleSheet, View } from 'react-native';
-import { DropdownFlatList, ModalDropdown, ModalDropdownHandles } from '@monchilin/react-native-dropdown';
+import {
+  DropdownFlatList,
+  ModalDropdown,
+  ModalDropdownHandles,
+} from '@monchilin/react-native-dropdown';
 
 const DEMO_OPTIONS_1 = [
   'option 1',
@@ -22,18 +26,18 @@ export default function WithImperative() {
       <View style={styles.row}>
         <ModalDropdown
           ref={modalDropdownRef1}
-          Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
+          Overlay={<DropdownFlatList data={DEMO_OPTIONS_1} />}
           Trigger={`I'am Dropdown`}
-          transitionHide={"flipDown"}
-          transitionShow={"flipUp"}
+          transitionHide={'flipDown'}
+          transitionShow={'flipUp'}
         />
         <Button
           title={'click below and after 2 seconds hide'}
           onPress={() => {
-            modalDropdownRef1.current.show()
+            modalDropdownRef1.current.show();
             setTimeout(() => {
-              modalDropdownRef1.current.hide()
-            }, 2000)
+              modalDropdownRef1.current.hide();
+            }, 2000);
           }}
         />
       </View>

@@ -4,8 +4,11 @@ import WithAnimation from './WithAnimation';
 import WithAutoPosition from './WithAutoPosition';
 import BaseExample from './BaseExample';
 import WithImperative from './WithImperative';
-import { DropdownFlatList, ModalDropdown } from '@monchilin/react-native-dropdown';
-import WithSafeArea from "./WithSafeArea";
+import {
+  DropdownFlatList,
+  ModalDropdown,
+} from '@monchilin/react-native-dropdown';
+import WithSafeArea from './WithSafeArea';
 
 const FeaturesConstants = {
   BaseExample: BaseExample,
@@ -15,28 +18,32 @@ const FeaturesConstants = {
   WithSafeArea: WithSafeArea,
 };
 
-const FeatureLabels = Object.keys(FeaturesConstants) as (keyof typeof FeaturesConstants)[];
+const FeatureLabels = Object.keys(
+  FeaturesConstants
+) as (keyof typeof FeaturesConstants)[];
 
 export default function FeaturesScreen() {
   const [exampleIndex, updateExampleIndex] = useState(1);
 
   const Component = FeaturesConstants[FeatureLabels[exampleIndex]];
 
-  return <View style={{ flex: 1 }}>
-    <Component/>
-    <View style={styles.focus}>
-      <Text>current example:</Text>
-      <ModalDropdown
-        Trigger={FeatureLabels[exampleIndex]}
-        Overlay={
-          <DropdownFlatList
-            data={FeatureLabels}
-            onSelect={({ index }) => updateExampleIndex(index)}
-          />
-        }
-      />
+  return (
+    <View style={{ flex: 1 }}>
+      <Component />
+      <View style={styles.focus}>
+        <Text>current example:</Text>
+        <ModalDropdown
+          Trigger={FeatureLabels[exampleIndex]}
+          Overlay={
+            <DropdownFlatList
+              data={FeatureLabels}
+              onSelect={({ index }) => updateExampleIndex(index)}
+            />
+          }
+        />
+      </View>
     </View>
-  </View>;
+  );
 }
 
 const styles = StyleSheet.create({

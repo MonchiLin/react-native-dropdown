@@ -1,28 +1,44 @@
-import React, { useCallback, useImperativeHandle, useMemo, useRef, useState, } from 'react';
+import React, {
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Animated,
   LayoutChangeEvent,
+  StyleSheet,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
   useWindowDimensions,
-  View
+  View,
 } from 'react-native';
 import Modal from 'react-native-modal';
 
-import type { Bounds, EdgeInsets, ModalDropdownHandles, ModalDropdownProps } from './type';
+import type {
+  Bounds,
+  EdgeInsets,
+  ModalDropdownHandles,
+  ModalDropdownProps,
+} from './type';
 import { id, truth } from './internal/utils';
-import { useAnimation, useEffectWithSkipFirst } from './internal/hooks';
+import { useAnimation, useEffectWhenWithSkipFirst } from './internal/hooks';
 import { ModalDropdownProvider } from './context';
-import { ModalDropdownStrategy, ModalHideReason, ModalShowReason } from "./enums";
-import { KeepTouchable, LayoutCapture } from "./internal/components";
+import {
+  ModalDropdownStrategy,
+  ModalHideReason,
+  ModalShowReason,
+} from './enums';
+import { KeepTouchable, LayoutCapture } from './internal/components';
 
 function Component(
   {
     safeArea,
     visible,
     animated = true,
-    placement = "bottomCenter",
+    placement = 'bottomCenter',
     transitionShow = 'flipUp',
     transitionHide = 'flipDown',
     adjustFrame = id,
@@ -79,42 +95,23 @@ function Component(
   // 1 渲染, 这个阶段才会真正渲染
   const [strategy, setStrategy] = useState(ModalDropdownStrategy.Unmounted);
 
-  useEffectWithSkipFirst(() => {
-    switch (strategy) {
-      case ModalDropdownStrategy.BeforeUnmounted:
-        animationState
-          .hide({
-            overlayBounds: overlayBounds.current,
-            triggerBounds: triggerBounds.current,
-            transitionShow,
-            transitionHide
-          })
-          .then(res => {
-            setStrategy(ModalDropdownStrategy.Unmounted);
-          });
-        break;
-      case ModalDropdownStrategy.Measure:
-        break;
-      case ModalDropdownStrategy.Render:
-        break;
-      case ModalDropdownStrategy.Unmounted:
-        break;
-    }
-  }, [strategy]);
-
   // 手动隐藏
   const hide = () => _onRequestClose(ModalHideReason.WithRef);
 
   // 手动打开
   const show = () => _onRequestOpen(ModalShowReason.WithRef);
 
-  useEffectWithSkipFirst(() => {
-    if (visible) {
-      _onRequestOpen(ModalShowReason.VisibleStateChange);
-    } else {
-      _onRequestClose(ModalHideReason.VisibleStateChange);
-    }
-  }, [visible, transitionHide, transitionShow]);
+  useEffectWhenWithSkipFirst(
+    () => {
+      if (visible) {
+        _onRequestOpen(ModalShowReason.VisibleStateChange);
+      } else {
+        _onRequestClose(ModalHideReason.VisibleStateChange);
+      }
+    },
+    [transitionHide, transitionShow],
+    [visible]
+  );
 
   useImperativeHandle(ref, () => ({
     hide,
@@ -142,42 +139,67 @@ function Component(
   // overlay 预渲染阶段的尺寸捕获
   const onOverlayCapture = async (bounds: Bounds) => {
     overlayBounds.current = bounds;
+    // 先显示动画, 然后等到下个事件循环在更新 ModalDropdownStrategy, 否则在 web 上运行有问题, 会闪烁
     animationState.show({
       overlayBounds: overlayBounds.current,
       triggerBounds: triggerBounds.current,
       transitionShow,
-      transitionHide
-    })
-    setImmediate(() => {
-      setStrategy(ModalDropdownStrategy.Render)
+      transitionHide,
     });
+    setImmediate(() => setStrategy(ModalDropdownStrategy.Render));
   };
 
   const _onRequestClose = (reason: ModalHideReason) => {
     if (onModalWillHide(reason) !== false) {
       setStrategy(ModalDropdownStrategy.BeforeUnmounted);
+      animationState
+        .hide({
+          overlayBounds: overlayBounds.current,
+          triggerBounds: triggerBounds.current,
+          transitionShow,
+          transitionHide,
+        })
+        .then((_) => {
+          setStrategy(ModalDropdownStrategy.Unmounted);
+        });
     }
   };
 
   const _onRequestOpen = (reason: ModalShowReason) => {
     if (onModalWillShow(reason) !== false) {
-      setStrategy(ModalDropdownStrategy.Measure);
+      // 如果是 slideUp 则先测量尺寸, 因为 slideUp 依赖元素高度, 否则就直接渲染
+      if (transitionShow === 'slideUp') {
+        setStrategy(ModalDropdownStrategy.Measure);
+      } else {
+        setStrategy(ModalDropdownStrategy.Render);
+        animationState.show({
+          overlayBounds: overlayBounds.current,
+          triggerBounds: triggerBounds.current,
+          transitionShow,
+          transitionHide,
+        });
+      }
     }
   };
 
   const _renderTrigger = useMemo(() => {
-    if (typeof Trigger === "function") {
-      return KeepTouchable(<Trigger/>, { onPress: () => _onRequestOpen(ModalShowReason.ClickTrigger) });
-    } else if (typeof Trigger === "object") {
+    if (typeof Trigger === 'function') {
+      return KeepTouchable(<Trigger />, {
+        onPress: () => _onRequestOpen(ModalShowReason.ClickTrigger),
+      });
+    } else if (typeof Trigger === 'object') {
       return Trigger;
     } else {
-      return <TouchableOpacity onPress={() => _onRequestOpen(ModalShowReason.ClickTrigger)}>
-        <Text style={{ color: "#2d8cfe" }}>
-          {Trigger}
-        </Text>
-      </TouchableOpacity>;
+      return (
+        <TouchableOpacity
+          onPress={() => _onRequestOpen(ModalShowReason.ClickTrigger)}
+        >
+          <Text style={{ color: '#2d8cfe' }}>{Trigger}</Text>
+        </TouchableOpacity>
+      );
     }
     // transitionShow,transitionHide,overlayBounds is  `_onRequestOpen` deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Trigger, transitionShow, transitionHide]);
 
   const frameStyle = calcPosition();
@@ -203,31 +225,32 @@ function Component(
       isVisible={modalVisible}
       onBackButtonPress={() => _onRequestClose(ModalHideReason.ClickBackButton)}
     >
-      {
-        strategy === ModalDropdownStrategy.Measure
-          ? <LayoutCapture
-            onCapture={onOverlayCapture}
-            style={frameStyle}
+      {strategy === ModalDropdownStrategy.Measure ? (
+        <LayoutCapture onCapture={onOverlayCapture} style={frameStyle}>
+          {Overlay}
+        </LayoutCapture>
+      ) : (
+        ModalDropdownStrategy.Render && (
+          <TouchableWithoutFeedback
+            onPress={() => _onRequestClose(ModalHideReason.ClickOverlayOutside)}
           >
-            {Overlay}
-          </LayoutCapture>
-          : (ModalDropdownStrategy.Render &&
-            <TouchableWithoutFeedback onPress={() => _onRequestClose(ModalHideReason.ClickOverlayOutside)}>
-              <View style={{ flex: 1 }}>
-                <Animated.View
-                  ref={overlayRef}
-                  onLayout={onOverlayLayout}
-                  style={[
-                    frameStyle,
-                    { position: 'absolute' },
-                    animated && animationState.animatedStyle,
-                  ]}
-                >
-                  {Overlay}
-                </Animated.View>
-              </View>
-            </TouchableWithoutFeedback>)
-      }
+            <View style={{ flex: 1 }}>
+              <Animated.View
+                ref={overlayRef}
+                onLayout={onOverlayLayout}
+                style={[
+                  frameStyle,
+                  { position: 'absolute' },
+                  animated && animationState.animatedStyle,
+                  style.shadow,
+                ]}
+              >
+                {Overlay}
+              </Animated.View>
+            </View>
+          </TouchableWithoutFeedback>
+        )
+      )}
     </Modal>
   );
 
@@ -237,7 +260,8 @@ function Component(
         triggerBounds: triggerBounds.current,
         overlayBounds: overlayBounds.current,
         safeArea: safeArea,
-        onRequestClose: () => _onRequestClose(ModalHideReason.ClickOverlayInside),
+        onRequestClose: () =>
+          _onRequestClose(ModalHideReason.ClickOverlayInside),
         visible: modalVisible,
         show: show,
         hide: hide,
@@ -247,7 +271,7 @@ function Component(
         {...dropdownProps}
         onLayout={onLayout}
         ref={triggerRef}
-        style={[dropdownStyle, { position: "relative" }]}
+        style={[dropdownStyle, { position: 'relative' }]}
       >
         {_renderTrigger}
         {_renderModel}
@@ -256,4 +280,17 @@ function Component(
   );
 }
 
-export default React.forwardRef(Component) as (p: ModalDropdownProps & { ref?: React.Ref<ModalDropdownHandles> }) => JSX.Element;
+const style = StyleSheet.create({
+  shadow: {
+    shadowColor: '#6b6b6b',
+
+    shadowOpacity: 0.26,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 10,
+    elevation: 10,
+  },
+});
+
+export default React.forwardRef(Component) as (
+  p: ModalDropdownProps & { ref?: React.Ref<ModalDropdownHandles> }
+) => JSX.Element;

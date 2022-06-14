@@ -1,6 +1,10 @@
-import { ModalDropdown, DropdownFlatList } from '@monchilin/react-native-dropdown';
+import {
+  ModalDropdown,
+  DropdownFlatList,
+} from '@monchilin/react-native-dropdown';
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Divider } from '../Common';
 
 const DEMO_OPTIONS_1 = [
   'option 1',
@@ -24,8 +28,8 @@ const hiddenAnimations = [
 ] as const;
 
 export default function WithAnimation() {
-  const [transitionShowIndex, setTransitionShowIndex] = useState(0);
-  const [transitionHiddenIndex, setTransitionHiddenIndex] = useState(0);
+  const [transitionShowIndex, setTransitionShowIndex] = useState(3);
+  const [transitionHiddenIndex, setTransitionHiddenIndex] = useState(3);
 
   return (
     <View style={styles.container}>
@@ -36,7 +40,8 @@ export default function WithAnimation() {
             <DropdownFlatList
               onSelect={({ index }) => {
                 setTransitionShowIndex(index);
-              }} data={showAnimations}
+              }}
+              data={showAnimations}
             />
           }
         />
@@ -52,19 +57,12 @@ export default function WithAnimation() {
           }
           Trigger={`click to change transitionHide current is [${hiddenAnimations[transitionHiddenIndex]}]`}
         />
-        <View
-          style={{
-            height: 1,
-            backgroundColor: 'gray',
-            width: '100%',
-            marginVertical: 20,
-          }}
-        />
+        <Divider />
         <ModalDropdown
-          dropdownProps={{ testID: "debug" }}
+          dropdownProps={{ testID: 'debug' }}
           transitionShow={showAnimations[transitionShowIndex]}
           transitionHide={hiddenAnimations[transitionHiddenIndex]}
-          Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
+          Overlay={<DropdownFlatList data={DEMO_OPTIONS_1} />}
           Trigger={'try transition'}
         />
       </View>

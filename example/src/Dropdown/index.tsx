@@ -1,16 +1,16 @@
 import ModalDropdown from './ModalDropdown';
-import DropdownFlatListItem from "./DropdownFlatListItem";
-import DropdownFlatList from "./DropdownFlatList";
-import DropdownButton from "./DropdownButton";
-import { useModalDropdownContext } from "./context";
+import DropdownFlatListItem from './DropdownFlatListItem';
+import DropdownFlatList from './DropdownFlatList';
+import DropdownButton from './DropdownButton';
+import { useModalDropdownContext } from './context';
 
 export {
   ModalDropdown,
   DropdownFlatListItem,
   DropdownFlatList,
   DropdownButton,
-  useModalDropdownContext
-}
+  useModalDropdownContext,
+};
 
 export type {
   ModalDropdownProps,
@@ -26,4 +26,3 @@ export type {
   Bounds,
   EdgeInsets,
 } from './type';
-

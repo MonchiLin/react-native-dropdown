@@ -6,7 +6,7 @@ export function id<T>(v?: T): T {
 }
 
 export function setImmediatePromise() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setImmediate(resolve);
   });
 }

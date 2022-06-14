@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import FeaturesScreen from "./Feature/Features";
-import DemosScreen from "./Demos/Demos";
-import { DropdownButton, DropdownFlatList, ModalDropdown } from "@monchilin/react-native-dropdown";
+import FeaturesScreen from './Feature/Features';
+import DemosScreen from './Demos/Demos';
+import {
+  DropdownButton,
+  DropdownFlatList,
+  ModalDropdown,
+} from '@monchilin/react-native-dropdown';
 
 const Views = {
   FeaturesScreen: FeaturesScreen,
@@ -23,15 +27,17 @@ export default function App() {
         <View style={styles.focus}>
           <Text>current view:</Text>
           <ModalDropdown
-            Overlay={<DropdownFlatList
-              index={viewIndex}
-              onItemPress={({ index }) => updateExampleIndex(index)}
-              data={ViewLabels}/>
+            Overlay={
+              <DropdownFlatList
+                index={viewIndex}
+                onItemPress={({ index }) => updateExampleIndex(index)}
+                data={ViewLabels}
+              />
             }
-            Trigger={<DropdownButton label={ViewLabels[viewIndex]}/>}
+            Trigger={<DropdownButton label={ViewLabels[viewIndex]} />}
           />
         </View>
-        <Component/>
+        <Component />
       </SafeAreaView>
     </SafeAreaProvider>
   );

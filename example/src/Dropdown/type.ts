@@ -1,7 +1,14 @@
-import type { FlatListProps, GestureResponderEvent, StyleProp, TextStyle, ViewProps, ViewStyle } from 'react-native';
+import type {
+  FlatListProps,
+  GestureResponderEvent,
+  StyleProp,
+  TextStyle,
+  ViewProps,
+  ViewStyle,
+} from 'react-native';
 import type { ModalProps } from 'react-native-modal';
-import type { ModalHideReason, ModalShowReason } from "./enums";
-import type { ReactNode } from "react";
+import type { ModalHideReason, ModalShowReason } from './enums';
+import type { ReactNode } from 'react';
 
 export type ModalDropdownContextType = {
   // 如果传入 safeArea 则尝试计算相较于 trigger 的安全区域
@@ -11,21 +18,26 @@ export type ModalDropdownContextType = {
   // top: 从 trigger 顶部到可视区域顶部的位置
 
   // trigger 自身的尺寸
-  triggerBounds: Bounds,
-  overlayBounds: Bounds,
+  triggerBounds: Bounds;
+  overlayBounds: Bounds;
   // 可视区域, 该参数一般通过 safeArea 相关的库获取, 例如 https://github.com/th3rdwave/react-native-safe-area-context#usesafeareainsets
-  safeArea?: EdgeInsets,
+  safeArea?: EdgeInsets;
   // 准备关闭 overlay
-  onRequestClose: () => void
+  onRequestClose: () => void;
   // 显示 overlay
-  show: () => void
+  show: () => void;
   // 隐藏 overlay
-  hide: () => void
+  hide: () => void;
   // 当前 overlay 是否可见
-  visible: boolean
-}
+  visible: boolean;
+};
 
-export type AnimationExecute = (params: { overlayBounds: Bounds, triggerBounds: Bounds, transitionShow: ModalDropdownAnimations['transitionShow'], transitionHide: ModalDropdownAnimations['transitionHide'] }) => Promise<void>
+export type AnimationExecute = (params: {
+  overlayBounds: Bounds;
+  triggerBounds: Bounds;
+  transitionShow: ModalDropdownAnimations['transitionShow'];
+  transitionHide: ModalDropdownAnimations['transitionHide'];
+}) => Promise<void>;
 
 // 相对于左上角的位置和大小
 export type EdgeInsets = {
@@ -58,7 +70,7 @@ export type UseAnimationParameters = {
   visible: boolean;
   transitionShow: ModalDropdownAnimations['transitionShow'];
   transitionHide: ModalDropdownAnimations['transitionHide'];
-  overlayBounds: Bounds
+  overlayBounds: Bounds;
 };
 
 export type DropdownFlatListProps<ItemT extends string | number> = {
@@ -67,13 +79,22 @@ export type DropdownFlatListProps<ItemT extends string | number> = {
   // 被选中的索引（受控）
   index?: number;
   // 点击 item 后触发的回调
-  onItemPress?: (info: { index: number, item?: ItemT }) => boolean | void | undefined;
+  onItemPress?: (info: {
+    index: number;
+    item?: ItemT;
+  }) => boolean | void | undefined;
   // 仅在传入 index 时生效选择某个元素后触发
   // 注意: 如果元素已被选中, 该回调不会触发, 而是触发 onAntiSelect, 这对于需要反选的场景很有效, 如果你只想处理点击事件, 那么请使用 onItemPress
-  onSelect?: (info: { index: number, item?: ItemT }) => boolean | void | undefined;
+  onSelect?: (info: {
+    index: number;
+    item?: ItemT;
+  }) => boolean | void | undefined;
   // 仅在传入 index 时生效反选某个元素后触发
   // 注意: 如果元素未被选中, 该回调不会触发, 而是触发 onSelect, 这对于需要反选的场景很有效, 如果你只想处理点击事件, 那么请使用 onItemPress
-  onAntiSelect?: (info: { index: number, item?: ItemT }) => boolean | void | undefined;
+  onAntiSelect?: (info: {
+    index: number;
+    item?: ItemT;
+  }) => boolean | void | undefined;
   // 数据源
   data: ReadonlyArray<ItemT>;
   // 自定义渲染
@@ -82,15 +103,14 @@ export type DropdownFlatListProps<ItemT extends string | number> = {
     index: number;
     isActive: boolean;
   }) => JSX.Element;
-} & Omit<FlatListProps<ItemT>,
-  'data' | 'renderItem'>;
+} & Omit<FlatListProps<ItemT>, 'data' | 'renderItem'>;
 
 export type DropdownFlatListItemProps = {
   label: string | number;
   // 是否处于选中状态
-  isActive?: boolean,
+  isActive?: boolean;
   // 容器样式
-  contentContainerStyle?: StyleProp<ViewStyle>,
+  contentContainerStyle?: StyleProp<ViewStyle>;
   // 选中状态下容器样式
   activeContentContainerStyle?: StyleProp<ViewStyle>;
   // label 样式
@@ -98,31 +118,31 @@ export type DropdownFlatListItemProps = {
   // 选中状态下 label 样式
   activeLabelStyle?: StyleProp<TextStyle>;
   // 点击事件
-  onPress: (event: GestureResponderEvent) => void
+  onPress: (event: GestureResponderEvent) => void;
 };
 
 type DropdownButtonPropsBase = {
-  contentContainerStyle?: StyleProp<ViewStyle>
-  disabled?: boolean
-}
+  contentContainerStyle?: StyleProp<ViewStyle>;
+  disabled?: boolean;
+};
 
-export type DropdownButtonProps = DropdownButtonPropsBase
-  & (
-  { label: string, Icon?: ReactNode, labelStyle?: StyleProp<TextStyle> }
-  | { children: ReactNode }
-  )
+export type DropdownButtonProps = DropdownButtonPropsBase &
+  (
+    | { label: string; Icon?: ReactNode; labelStyle?: StyleProp<TextStyle> }
+    | { children: ReactNode }
+  );
 
 export type ModalDropdownPlacement =
-  "bottomLeft"
-  | "bottomCenter"
-  | "bottomRight"
-  | "topLeft"
-  | "topCenter"
-  | "topRight"
+  | 'bottomLeft'
+  | 'bottomCenter'
+  | 'bottomRight'
+  | 'topLeft'
+  | 'topCenter'
+  | 'topRight';
 
 export type ModalDropdownProps = {
   // 可视区域, 该参数一般通过 safeArea 相关的库获取, 例如 https://github.com/th3rdwave/react-native-safe-area-context#usesafeareainsets
-  safeArea?: EdgeInsets
+  safeArea?: EdgeInsets;
   // 是否显示
   visible?: boolean;
   // 是否启动 dropdown 动画
@@ -141,7 +161,7 @@ export type ModalDropdownProps = {
   onModalWillHide?: (reason: ModalHideReason) => boolean | void;
 
   // 位置
-  placement?: ModalDropdownPlacement
+  placement?: ModalDropdownPlacement;
 
   // 根容器相关
   // 根容器的样式
@@ -149,7 +169,18 @@ export type ModalDropdownProps = {
   dropdownStyle?: StyleProp<ViewStyle>;
 
   // Modal 相关
-  modalProps?: Partial<Omit<ModalProps, 'isVisible' | 'onBackButtonPress' | 'children' | 'animationIn' | 'animationOut' | 'animationInTiming' | 'animationOutTiming'>>;
+  modalProps?: Partial<
+    Omit<
+      ModalProps,
+      | 'isVisible'
+      | 'onBackButtonPress'
+      | 'children'
+      | 'animationIn'
+      | 'animationOut'
+      | 'animationInTiming'
+      | 'animationOutTiming'
+    >
+  >;
 
   // 触发 Dropdown 的元素
   Trigger: ReactNode | string;

@@ -1,6 +1,6 @@
-import { Animated } from "react-native";
-import React, { useEffect, useRef } from "react";
-import { Icon } from "@rneui/themed";
+import { Animated, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Icon } from '@rneui/themed';
 
 export const AnimatedDownArrow = ({ visible, color = undefined }) => {
   const animatedValue = useRef(new Animated.Value(0));
@@ -27,10 +27,26 @@ export const AnimatedDownArrow = ({ visible, color = undefined }) => {
   });
 
   return (
-    <Animated.View
-      style={[{ transform: [{ rotate: rotateInterpolate }] }]}
-    >
-      <Icon color={color} size={18} name={'chevron-down-outline'} type={'ionicon'}/>
+    <Animated.View style={[{ transform: [{ rotate: rotateInterpolate }] }]}>
+      <Icon
+        color={color}
+        size={18}
+        name={'chevron-down-outline'}
+        type={'ionicon'}
+      />
     </Animated.View>
+  );
+};
+
+export const Divider = () => {
+  return (
+    <View
+      style={{
+        height: 1,
+        backgroundColor: 'gray',
+        width: '100%',
+        marginVertical: 20,
+      }}
+    />
   );
 };

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import DemoVirtualCurrencyDropdown from './DemoVirtualCurrencyDropdown';
-import { ModalDropdown } from "@monchilin/react-native-dropdown";
-import DropdownFlatList from "../Dropdown/DropdownFlatList";
-import DemoFilters from "./DemoFilters";
+import { ModalDropdown } from '@monchilin/react-native-dropdown';
+import DropdownFlatList from '../Dropdown/DropdownFlatList';
+import DemoFilters from './DemoFilters';
 
 const DEMOS = {
   VirtualCurrencyDropdown: DemoVirtualCurrencyDropdown,
@@ -19,12 +19,18 @@ export default function DemosScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Component/>
+      <Component />
       <View style={styles.focus}>
         <Text>current demo:</Text>
         <ModalDropdown
           Trigger={DEMO_LABELS[demoIndex]}
-          Overlay={<DropdownFlatList style={{ width: 100 }} data={DEMO_LABELS} onSelect={({ index }) => updateDemoIndex(index)}/>}
+          Overlay={
+            <DropdownFlatList
+              style={{ width: 100 }}
+              data={DEMO_LABELS}
+              onSelect={({ index }) => updateDemoIndex(index)}
+            />
+          }
         />
       </View>
     </View>

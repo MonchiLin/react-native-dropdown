@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
-import { Animated, ImageStyle, StyleProp, StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
-import { DropdownFlatList, ModalDropdown } from "@monchilin/react-native-dropdown";
-import { AnimatedDownArrow } from "../AnimatedDownArrow";
+import {
+  Animated,
+  ImageStyle,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {
+  DropdownFlatList,
+  ModalDropdown,
+} from '@monchilin/react-native-dropdown';
+import { AnimatedDownArrow } from '../Common';
 
 const DATA_SOURCE = ['BNA', 'USDI', 'SHUIBI', 'ATC', 'CTC'];
 
 const ArrowDropDown = ({
-                         style,
-                       }: {
+  style,
+}: {
   style: Animated.WithAnimatedValue<StyleProp<ImageStyle>>;
 }) => {
   return (
@@ -24,23 +35,25 @@ export default function DemoVirtualCurrencyDropdown() {
 
   return (
     <ModalDropdown
-      transitionHide={"scaleOut"}
-      transitionShow={"scaleIn"}
+      transitionHide={'scaleOut'}
+      transitionShow={'scaleIn'}
       onModalWillHide={() => setVisibleState(false)}
       onModalWillShow={() => setVisibleState(true)}
       visible={visible}
-      Overlay={<DropdownFlatList
-        data={DATA_SOURCE}
-        index={index}
-        onSelect={({ index }) => updateIndex(index)}
-        renderItem={({ item, isActive }) => {
-          return (
-            <View style={[styles.item, isActive && styles.itemActive]}>
-              <Text style={{ color: '#FFFFFF' }}>{item}</Text>
-            </View>
-          );
-        }}
-      />}
+      Overlay={
+        <DropdownFlatList
+          data={DATA_SOURCE}
+          index={index}
+          onSelect={({ index }) => updateIndex(index)}
+          renderItem={({ item, isActive }) => {
+            return (
+              <View style={[styles.item, isActive && styles.itemActive]}>
+                <Text style={{ color: '#FFFFFF' }}>{item}</Text>
+              </View>
+            );
+          }}
+        />
+      }
       Trigger={
         <TouchableOpacity
           onPress={() => setVisibleState(true)}
@@ -49,7 +62,7 @@ export default function DemoVirtualCurrencyDropdown() {
           <Text style={{ color: '#FFFFFF' }}>
             {DATA_SOURCE[index] ?? 'Select Currency'}
           </Text>
-          <AnimatedDownArrow visible={visible}/>
+          <AnimatedDownArrow visible={visible} />
         </TouchableOpacity>
       }
     />

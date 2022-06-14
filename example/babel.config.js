@@ -3,13 +3,14 @@ module.exports = function (api) {
   return {
     presets: ['babel-preset-expo'],
     plugins: [
-      ['module-resolver',
+      [
+        'module-resolver',
         {
           alias: {
             '@monchilin/react-native-dropdown': './src/Dropdown',
-          }
-        }
-      ]
-    ]
+          },
+        },
+      ],
+    ],
   };
 };

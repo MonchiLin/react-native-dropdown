@@ -1,7 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Image, ImageStyle, StyleProp, StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
-import { DropdownFlatList, ModalDropdown } from '@monchilin/react-native-dropdown';
-import { DropdownButton } from "@monchilin/react-native-dropdown";
+import {
+  Animated,
+  Image,
+  ImageStyle,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {
+  DropdownButton,
+  DropdownFlatList,
+  ModalDropdown,
+} from '@monchilin/react-native-dropdown';
+import { Divider } from '../Common';
 
 const DATA_SOURCE = [
   'option 1',
@@ -48,22 +61,9 @@ const UserIcon = () => {
   );
 };
 
-const Divider = () => {
-  return (
-    <View
-      style={{
-        width: '100%',
-        height: 1,
-        backgroundColor: 'black',
-        marginVertical: 10,
-      }}
-    />
-  );
-};
-
 const ArrowDropDown = ({
-                         style,
-                       }: {
+  style,
+}: {
   style: Animated.WithAnimatedValue<StyleProp<ImageStyle>>;
 }) => {
   return (
@@ -81,11 +81,6 @@ export default function BaseExample() {
   const [visible3, setVisible3State] = useState(false);
   const [visible4, setVisible4State] = useState(false);
   const [visible5, setVisible5State] = useState(false);
-  const [visible6, setVisible6State] = useState(false);
-  const [visible7, setVisible7State] = useState(false);
-  const [visible8, setVisible8State] = useState(false);
-  const [visible9, setVisible9State] = useState(false);
-  const [visible10, setVisible10State] = useState(false);
   const animatedValue = useRef(new Animated.Value(0));
 
   useEffect(() => {
@@ -118,48 +113,69 @@ export default function BaseExample() {
           visible={visible1}
           onModalWillShow={() => setVisible1State(true)}
           onModalWillHide={() => setVisible1State(false)}
-          Trigger={<TouchableOpacity
-            onPress={() => setVisible1State(true)}
-            style={[{ flexDirection: "row" }, styles.dropdownContainer]}
-          >
-            <Text>{DATA_SOURCE[index] ?? 'Press me'}</Text>
-            <ArrowDropDown style={{ transform: [{ rotate: rotateInterpolate }] }}/>
-          </TouchableOpacity>
+          Trigger={
+            <TouchableOpacity
+              onPress={() => setVisible1State(true)}
+              style={[{ flexDirection: 'row' }, styles.dropdownContainer]}
+            >
+              <Text>{DATA_SOURCE[index] ?? 'Press me'}</Text>
+              <ArrowDropDown
+                style={{ transform: [{ rotate: rotateInterpolate }] }}
+              />
+            </TouchableOpacity>
           }
-          Overlay={<DropdownFlatList style={{ width: "auto" }} onSelect={({ index }) => updateIndex(index)} data={DATA_SOURCE}/>}
+          Overlay={
+            <DropdownFlatList
+              style={{ width: 'auto' }}
+              onSelect={({ index }) => updateIndex(index)}
+              data={DATA_SOURCE}
+            />
+          }
         />
-        <Divider/>
+        <Divider />
         <Text style={styles.label}>With DropdownButton</Text>
         <ModalDropdown
           onModalWillShow={() => setVisible2State(true)}
           onModalWillHide={() => setVisible2State(false)}
-          Overlay={<DropdownFlatList data={DATA_SOURCE}/>}
-          Trigger={<DropdownButton label={"Press me"}/>}
+          Overlay={<DropdownFlatList data={DATA_SOURCE} />}
+          Trigger={<DropdownButton label={'Press me'} />}
         />
-        <Divider/>
+        <Divider />
         <Text style={styles.label}>With Disabled</Text>
         <ModalDropdown
           onModalWillShow={() => setVisible3State(true)}
           onModalWillHide={() => setVisible3State(false)}
-          Overlay={<DropdownFlatList data={DATA_SOURCE}/>}
-          Trigger={<DropdownButton disabled label={"Press me"}/>}
+          Overlay={<DropdownFlatList data={DATA_SOURCE} />}
+          Trigger={<DropdownButton disabled label={'Press me'} />}
         />
-        <Divider/>
+        <Divider />
         <Text style={styles.label}>With FlatList disabled</Text>
         <ModalDropdown
           onModalWillShow={() => setVisible4State(true)}
           onModalWillHide={() => setVisible4State(false)}
-          Overlay={<DropdownFlatList index={index} onItemPress={({ index }) => updateIndex(index)} data={DATA_SOURCE1}/>}
-          Trigger={<DropdownButton label={"Press me"}/>}
+          Overlay={
+            <DropdownFlatList
+              index={index}
+              onItemPress={({ index }) => updateIndex(index)}
+              data={DATA_SOURCE1}
+            />
+          }
+          Trigger={<DropdownButton label={'Press me'} />}
         />
-        <Divider/>
+        <Divider />
         <Text style={styles.label}>Without Animation</Text>
         <ModalDropdown
           animated={false}
           onModalWillShow={() => setVisible5State(true)}
           onModalWillHide={() => setVisible5State(false)}
-          Overlay={<DropdownFlatList index={index} onItemPress={({ index }) => updateIndex(index)} data={DATA_SOURCE}/>}
-          Trigger={<DropdownButton label={"Press me"}/>}
+          Overlay={
+            <DropdownFlatList
+              index={index}
+              onItemPress={({ index }) => updateIndex(index)}
+              data={DATA_SOURCE}
+            />
+          }
+          Trigger={<DropdownButton label={'Press me'} />}
         />
 
         {/*<Divider/>*/}

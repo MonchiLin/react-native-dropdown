@@ -1,7 +1,10 @@
-import { ModalDropdown, DropdownFlatList } from '@monchilin/react-native-dropdown';
+import {
+  ModalDropdown,
+  DropdownFlatList,
+} from '@monchilin/react-native-dropdown';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const DEMO_OPTIONS_1 = [
   'option 1',
@@ -16,7 +19,7 @@ const DEMO_OPTIONS_1 = [
 ];
 
 export default function WithSafeArea() {
-  const safeAreaInsets = useSafeAreaInsets()
+  const safeAreaInsets = useSafeAreaInsets();
 
   return (
     <View style={styles.container}>
@@ -24,14 +27,14 @@ export default function WithSafeArea() {
         <View style={styles.cell}>
           <ModalDropdown
             safeArea={safeAreaInsets}
-            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
+            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1} />}
             Trigger={'upper left corner'}
           />
         </View>
         <View style={[styles.cell, { alignItems: 'flex-end' }]}>
           <ModalDropdown
             safeArea={safeAreaInsets}
-            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
+            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1} />}
             Trigger={'upper right corner'}
           />
         </View>
@@ -40,7 +43,7 @@ export default function WithSafeArea() {
         <View style={[styles.cell, { justifyContent: 'flex-end' }]}>
           <ModalDropdown
             safeArea={safeAreaInsets}
-            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
+            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1} />}
             Trigger={'lower left corner'}
           />
         </View>
@@ -52,7 +55,7 @@ export default function WithSafeArea() {
         >
           <ModalDropdown
             safeArea={safeAreaInsets}
-            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}
+            Overlay={<DropdownFlatList data={DEMO_OPTIONS_1} />}
             Trigger={'lower right corner'}
           />
         </View>

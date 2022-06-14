@@ -1,26 +1,33 @@
-import { FlatList } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  View,
+  Text,
+  useWindowDimensions,
+} from 'react-native';
 import React from 'react';
-import { useModalDropdownContext } from './internal/context';
+import { DropdownFlatListProps } from './type';
 import DropdownFlatListItem from './DropdownFlatListItem';
 import { KeepTouchable } from './internal/components';
-import type { DropdownFlatListProps } from "./type";
+import { useModalDropdownContext } from './context';
 
 export default function DropdownFlatList<T extends string | number>({
-                                                                      data,
-                                                                      renderItem,
-                                                                      onAntiSelect,
-                                                                      onSelect,
-                                                                      onItemPress,
-                                                                      index,
-                                                                      defaultIndex,
-                                                                      ...props
-                                                                    }: DropdownFlatListProps<T>) {
+  data,
+  renderItem,
+  onAntiSelect,
+  onSelect,
+  onItemPress,
+  index,
+  defaultIndex,
+  ...props
+}: DropdownFlatListProps<T>) {
+  const windowDimensions = useWindowDimensions();
   const context = useModalDropdownContext();
 
-  const _onItemPress = (item: T, itemIndex: number) => {
+  const _onItemPress = (item, itemIndex) => {
     const info = { item, index: itemIndex };
     onItemPress?.(info);
-    context.onItemPress(info);
+    context.onRequestClose();
     if (index === itemIndex) {
       onAntiSelect?.(info);
     } else {
@@ -32,30 +39,38 @@ export default function DropdownFlatList<T extends string | number>({
     <FlatList
       scrollEnabled={true}
       data={data}
-      keyExtractor={(_, index) => index.toString()}
+      keyExtractor={(item, index) => index.toString()}
       renderItem={({ index: itemIndex, item }) => {
         const isActive = itemIndex === index;
-        if (typeof renderItem === "function") {
-          return KeepTouchable(renderItem({
-            item,
-            index: itemIndex,
-            isActive
-          }), { onPress: () => _onItemPress(item, itemIndex) });
+        if (typeof renderItem === 'function') {
+          return KeepTouchable(
+            renderItem({
+              item,
+              index,
+              isActive,
+            }),
+            { onPress: () => _onItemPress(item, itemIndex) }
+          );
         } else {
-          return <DropdownFlatListItem
-            item={item}
-            isActive={isActive}
-            onPress={() => _onItemPress(item, itemIndex)}/>;
+          return (
+            <DropdownFlatListItem
+              label={item}
+              isActive={isActive}
+              onPress={() => _onItemPress(item, itemIndex)}
+            />
+          );
         }
       }}
       automaticallyAdjustContentInsets={false}
       showsVerticalScrollIndicator={false}
       {...props}
       style={[
-        props.style,
         {
-          width: context.overlaySize.width,
+          backgroundColor: '#ffffff',
+          height: windowDimensions.height / 5,
         },
+        { width: context.triggerBounds.w },
+        props.style,
       ]}
     />
   );
