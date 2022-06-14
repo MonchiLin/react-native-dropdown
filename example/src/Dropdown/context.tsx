@@ -1,17 +1,18 @@
 import React from "react";
 import { id } from "./internal/utils";
-import { Context } from "./type";
+import { ModalDropdownContextType } from "./type";
 
-const ModalDropdownContext = React.createContext<Context>({
-    triggerSize: { height: 0, width: 0 },
-    onRequestClose: id,
-    show: id,
-    hide: id,
-    visible: false,
-    triggerPosition: { left: 0, right: 0, bottom: 0, top: 0 },
-    safeArea: undefined,
-  },
-);
+const defaultValue: ModalDropdownContextType = {
+  onRequestClose: id,
+  show: id,
+  hide: id,
+  visible: false,
+  overlayBounds: { x: 0, y: 0, w: 0, h: 0 },
+  triggerBounds: { x: 0, y: 0, w: 0, h: 0 },
+  safeArea: undefined,
+}
+
+const ModalDropdownContext = React.createContext<ModalDropdownContextType>(defaultValue);
 
 export const ModalDropdownProvider = ModalDropdownContext.Provider;
 

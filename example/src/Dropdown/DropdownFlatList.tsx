@@ -34,7 +34,7 @@ export default function DropdownFlatList<T extends string | number>(
     <View style={[
       style.shadow,
       {
-        width: context.triggerSize.width,
+        width: context.triggerBounds.w,
       }
     ]}>
       <FlatList

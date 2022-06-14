@@ -19,3 +19,14 @@ export enum ModalHideReason {
   // 点击 Overlay 外部
   ClickOverlayInside = "ClickOverlayInside"
 }
+
+export enum ModalDropdownStrategy {
+  // 测量
+  Measure= "Measure",
+  // 渲染
+  Render= "Render",
+  // 从 v-dom 中移除之前
+  BeforeUnmounted= "BeforeUnmounted",
+  // 未挂载
+  Unmounted= "Unmounted",
+}

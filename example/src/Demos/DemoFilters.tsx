@@ -30,7 +30,7 @@ function OrderPanel({ onSelect }) {
   return <View
     style={{
       width: windowDimensions.width,
-      height: windowDimensions.height - dropdownContext.triggerSize.height - dropdownContext.triggerPosition.top,
+      height: windowDimensions.height - dropdownContext.triggerBounds.h - dropdownContext.triggerBounds.y,
       backgroundColor: "#d0d0d0"
     }}
   >
@@ -58,7 +58,7 @@ function PriceRangePanel({ range, onConfirm, onClear }: { range: Range, onConfir
   return <View
     style={{
       width: windowDimensions.width,
-      height: windowDimensions.height - dropdownContext.triggerSize.height - dropdownContext.triggerPosition.top,
+      height: windowDimensions.height - dropdownContext.triggerBounds.h - dropdownContext.triggerBounds.y,
       backgroundColor: "#d0d0d0",
     }}
   >

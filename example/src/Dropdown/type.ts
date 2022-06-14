@@ -1,17 +1,18 @@
 import type { FlatListProps, GestureResponderEvent, StyleProp, TextStyle, ViewProps, ViewStyle } from 'react-native';
 import type { ModalProps } from 'react-native-modal';
-import type { ModalHideReason, ModalShowReason } from "./reasons";
+import type { ModalHideReason, ModalShowReason } from "./enums";
 import type { ReactNode } from "react";
 
-export type Context = {
-  // trigger 自身的尺寸
-  triggerSize: { height: number, width: number },
-  // 相较于 trigger 的安全区域
+export type ModalDropdownContextType = {
+  // 如果传入 safeArea 则尝试计算相较于 trigger 的安全区域
   // left: 从 trigger 左侧到屏幕可视区域左侧的位置
   // right: 从 trigger 左侧到可视区域右侧的位置
   // bottom: 从 trigger 左侧到可视区域底部的位置
   // top: 从 trigger 顶部到可视区域顶部的位置
-  triggerPosition: EdgeInsets,
+
+  // trigger 自身的尺寸
+  triggerBounds: Bounds,
+  overlayBounds: Bounds,
   // 可视区域, 该参数一般通过 safeArea 相关的库获取, 例如 https://github.com/th3rdwave/react-native-safe-area-context#usesafeareainsets
   safeArea?: EdgeInsets,
   // 准备关闭 overlay
@@ -23,6 +24,8 @@ export type Context = {
   // 当前 overlay 是否可见
   visible: boolean
 }
+
+export type AnimationExecute = (params: { overlayBounds: Bounds, triggerBounds: Bounds, transitionShow: ModalDropdownAnimations['transitionShow'], transitionHide: ModalDropdownAnimations['transitionHide'] }) => Promise<void>
 
 // 相对于左上角的位置和大小
 export type EdgeInsets = {
@@ -46,15 +49,16 @@ export type Size = {
   height: number;
 };
 
-export type Animations = {
+export type ModalDropdownAnimations = {
   transitionShow: 'flipUp' | 'scaleIn' | 'fadeIn' | 'slideUp';
   transitionHide: 'flipDown' | 'scaleOut' | 'fadeOut' | 'slideDown';
 };
 
-export type UseAnimationParams = {
+export type UseAnimationParameters = {
   visible: boolean;
-  transitionShow: Animations['transitionShow'];
-  transitionHide: Animations['transitionHide'];
+  transitionShow: ModalDropdownAnimations['transitionShow'];
+  transitionHide: ModalDropdownAnimations['transitionHide'];
+  overlayBounds: Bounds
 };
 
 export type DropdownFlatListProps<ItemT extends string | number> = {
@@ -116,7 +120,7 @@ export type ModalDropdownPlacement =
   | "topCenter"
   | "topRight"
 
-export type Props = {
+export type ModalDropdownProps = {
   // 可视区域, 该参数一般通过 safeArea 相关的库获取, 例如 https://github.com/th3rdwave/react-native-safe-area-context#usesafeareainsets
   safeArea?: EdgeInsets
   // 是否显示
@@ -124,16 +128,16 @@ export type Props = {
   // 是否启动 dropdown 动画
   animated?: boolean;
   // 显示时的动画效果
-  transitionShow?: Animations['transitionShow'];
+  transitionShow?: ModalDropdownAnimations['transitionShow'];
   // 隐藏式的动画效果
-  transitionHide?: Animations['transitionHide'];
+  transitionHide?: ModalDropdownAnimations['transitionHide'];
 
   // 每次更新 Modal 位置之前触发的回调函数，如果需要自定义 Modal 位置，则返回符合 Position 类型的对象即可
   adjustFrame?: (position: EdgeInsets) => EdgeInsets;
 
   // 触发在 dropdown 显示之前，如果返回 false 则不显示 dropdown
   onModalWillShow?: (reason: ModalShowReason) => boolean | void;
-  // 触发在 dropdown 关闭之前，如果返回 false 则不关闭 dropdown
+  // 触发在 dropdown 关闭之前，如果返回 false 则不隐藏 dropdown
   onModalWillHide?: (reason: ModalHideReason) => boolean | void;
 
   // 位置
@@ -153,7 +157,7 @@ export type Props = {
   Overlay: JSX.Element | JSX.Element[];
 };
 
-export type Handles = {
+export type ModalDropdownHandles = {
   hide: () => void;
   show: () => void;
 };

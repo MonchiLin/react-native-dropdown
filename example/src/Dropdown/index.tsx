@@ -13,9 +13,17 @@ export {
 }
 
 export type {
-  Props as ModalDropdownProps,
-  Position as ModalDropdownPosition,
-  Handles as ModalDropdownHandles,
-  Animations as ModalAnimations,
+  ModalDropdownProps,
+  ModalDropdownHandles,
+  ModalDropdownAnimations,
+  ModalDropdownContextType,
+  ModalDropdownPlacement,
+  UseAnimationParameters,
+  Size,
+  DropdownButtonProps,
+  DropdownFlatListItemProps,
+  DropdownFlatListProps,
+  Bounds,
+  EdgeInsets,
 } from './type';
 

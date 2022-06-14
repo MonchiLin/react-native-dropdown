@@ -17,8 +17,8 @@ const DEMO_OPTIONS_1 = [
 const showAnimations = ['flipUp', 'scaleIn', 'fadeIn', 'slideUp'] as const;
 
 const hiddenAnimations = [
-  'scaleOut',
   'flipDown',
+  'scaleOut',
   'fadeOut',
   'slideDown',
 ] as const;
@@ -31,12 +31,7 @@ export default function WithAnimation() {
     <View style={styles.container}>
       <View style={styles.row}>
         <ModalDropdown
-          Trigger={<TouchableOpacity>
-            <Text style={{ color: '#60c8f6' }}>
-              click to change transitionShow current is [
-              {showAnimations[transitionShowIndex]}]
-            </Text>
-          </TouchableOpacity>}
+          Trigger={`click to change transitionShow current is [${showAnimations[transitionShowIndex]}]`}
           Overlay={
             <DropdownFlatList
               onSelect={({ index }) => {
@@ -55,11 +50,7 @@ export default function WithAnimation() {
               data={hiddenAnimations}
             />
           }
-          Trigger={<Text style={{ color: '#60c8f6' }}>
-            click to change transitionShow current is [
-            {hiddenAnimations[transitionHiddenIndex]}]
-          </Text>
-          }
+          Trigger={`click to change transitionHide current is [${hiddenAnimations[transitionHiddenIndex]}]`}
         />
         <View
           style={{
@@ -70,6 +61,7 @@ export default function WithAnimation() {
           }}
         />
         <ModalDropdown
+          dropdownProps={{ testID: "debug" }}
           transitionShow={showAnimations[transitionShowIndex]}
           transitionHide={hiddenAnimations[transitionHiddenIndex]}
           Overlay={<DropdownFlatList data={DEMO_OPTIONS_1}/>}

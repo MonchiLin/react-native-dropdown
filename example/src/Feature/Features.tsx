@@ -18,14 +18,14 @@ const FeaturesConstants = {
 const FeatureLabels = Object.keys(FeaturesConstants) as (keyof typeof FeaturesConstants)[];
 
 export default function FeaturesScreen() {
-  const [exampleIndex, updateExampleIndex] = useState(0);
+  const [exampleIndex, updateExampleIndex] = useState(1);
 
   const Component = FeaturesConstants[FeatureLabels[exampleIndex]];
 
   return <View style={{ flex: 1 }}>
     <Component/>
     <View style={styles.focus}>
-      <Text>current demo:</Text>
+      <Text>current example:</Text>
       <ModalDropdown
         Trigger={FeatureLabels[exampleIndex]}
         Overlay={
