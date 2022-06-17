@@ -4,16 +4,18 @@ import DemoVirtualCurrencyDropdown from './DemoVirtualCurrencyDropdown';
 import { ModalDropdown } from '@monchilin/react-native-dropdown';
 import DropdownFlatList from '../Dropdown/DropdownFlatList';
 import DemoFullscreenFilters from './DemoFullscreenFilters';
+import DemoBlurView from "./DemoBlurView";
 
 const DEMOS = {
   VirtualCurrencyDropdown: DemoVirtualCurrencyDropdown,
   DemoFullscreenFilters: DemoFullscreenFilters,
+  DemoBlurView: DemoBlurView,
 };
 
 const DEMO_LABELS = Object.keys(DEMOS) as (keyof typeof DEMOS)[];
 
 export default function DemosScreen() {
-  const [demoIndex, updateDemoIndex] = useState(1);
+  const [demoIndex, updateDemoIndex] = useState(2);
 
   const Component = DEMOS[DEMO_LABELS[demoIndex]];
 

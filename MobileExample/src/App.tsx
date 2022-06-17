@@ -17,7 +17,7 @@ const Views = {
 const ViewLabels = Object.keys(Views) as (keyof typeof Views)[];
 
 export default function App() {
-  const [viewIndex, updateExampleIndex] = useState(0);
+  const [viewIndex, updateExampleIndex] = useState(1);
 
   const Component = Views[ViewLabels[viewIndex]];
 

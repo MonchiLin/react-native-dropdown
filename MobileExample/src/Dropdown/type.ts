@@ -187,7 +187,7 @@ export type ModalDropdownProps = {
   // 触发 Dropdown 的元素
   Trigger: ReactNode | string;
   // 触发 Dropdown 后弹出的元素
-  Overlay: JSX.Element | JSX.Element[];
+  Overlay: JSX.Element | JSX.Element[] | ((context: ModalDropdownContextType) => JSX.Element);
 };
 
 export type ModalDropdownHandles = {

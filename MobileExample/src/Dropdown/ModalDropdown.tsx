@@ -196,6 +196,18 @@ function Component(
   // overlay 没有被挂载, 并且动画不在执行
   const modalVisible = strategy !== ModalDropdownStrategy.Unmounted;
 
+  const context = {
+    triggerBounds: triggerBounds.current,
+    overlayBounds: overlayBounds.current,
+    windowSize: windowDimensions,
+    safeArea: safeArea,
+    onRequestClose: () =>
+      _onRequestClose(ModalHideReason.ClickOverlayInside),
+    visible: modalVisible,
+    show: show,
+    hide: hide,
+  }
+
   const _renderModel = (
     <Modal
       supportedOrientations={[
@@ -217,7 +229,7 @@ function Component(
     >
       {strategy === ModalDropdownStrategy.Measure ? (
         <LayoutCapture onCapture={onOverlayCapture} style={frameStyle}>
-          {Overlay}
+          {typeof Overlay === "function" ? <Overlay {...context}/> : Overlay}
         </LayoutCapture>
       ) : (
         (strategy === ModalDropdownStrategy.Render || strategy === ModalDropdownStrategy.BeforeUnmounted) && (
@@ -235,7 +247,7 @@ function Component(
                   animated && animationState.animatedStyle,
                 ]}
               >
-                {Overlay}
+                {typeof Overlay === "function" ? <Overlay {...context}/> : Overlay}
               </Animated.View>
             </View>
           </TouchableWithoutFeedback>
