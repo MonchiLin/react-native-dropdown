@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState, } from 'react';
 import {
   Animated,
   LayoutChangeEvent,
@@ -17,20 +11,11 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 
-import type {
-  Bounds,
-  EdgeInsets,
-  ModalDropdownHandles,
-  ModalDropdownProps,
-} from './type';
+import type { Bounds, EdgeInsets, ModalDropdownHandles, ModalDropdownProps, } from './type';
 import { id, truth } from './internal/utils';
-import { useAnimation, useEffectWhenWithSkipFirst } from './internal/hooks';
+import { useAnimation } from './internal/hooks';
 import { ModalDropdownProvider } from './context';
-import {
-  ModalDropdownStrategy,
-  ModalHideReason,
-  ModalShowReason,
-} from './enums';
+import { ModalDropdownStrategy, ModalHideReason, ModalShowReason, } from './enums';
 import { KeepTouchable, LayoutCapture } from './internal/components';
 
 function Component(
@@ -95,23 +80,61 @@ function Component(
   // 1 渲染, 这个阶段才会真正渲染
   const [strategy, setStrategy] = useState(ModalDropdownStrategy.Unmounted);
 
+  const _onRequestClose = (reason: ModalHideReason) => {
+    if (onModalWillHide(reason) !== false) {
+      setStrategy(ModalDropdownStrategy.BeforeUnmounted);
+      animationState
+        .hide({
+          overlayBounds: overlayBounds.current,
+          triggerBounds: triggerBounds.current,
+          transitionShow,
+          transitionHide,
+        })
+        .then((_) => {
+          setStrategy(ModalDropdownStrategy.Unmounted);
+        });
+    }
+  };
+
+  const _onRequestOpen = (reason: ModalShowReason) => {
+    if (onModalWillShow(reason) !== false) {
+      // 如果是 slideUp 则先测量尺寸, 因为 slideUp 依赖元素高度, 否则就直接渲染
+      if (transitionShow === 'slideUp') {
+        setStrategy(ModalDropdownStrategy.Measure);
+      } else {
+        setStrategy(ModalDropdownStrategy.Render);
+        animationState.show({
+          overlayBounds: overlayBounds.current,
+          triggerBounds: triggerBounds.current,
+          transitionShow,
+          transitionHide,
+        });
+      }
+    }
+  };
   // 手动隐藏
   const hide = () => _onRequestClose(ModalHideReason.WithRef);
 
   // 手动打开
   const show = () => _onRequestOpen(ModalShowReason.WithRef);
 
-  useEffectWhenWithSkipFirst(
-    () => {
+  const visiblePrev = useRef(visible);
+
+  useEffect(() => {
+    // 如果当前 visible 和之前的 visible 相同, 则说明是 transitionHide or transitionShow 发生变化,
+    // 则忽略本次 effect
+    if (visiblePrev.current === visible) {
+      return;
+    } else {
+      visiblePrev.current = visible;
+
       if (visible) {
         _onRequestOpen(ModalShowReason.VisibleStateChange);
       } else {
         _onRequestClose(ModalHideReason.VisibleStateChange);
       }
-    },
-    [transitionHide, transitionShow],
-    [visible]
-  );
+    }
+  }, [visible, transitionHide, transitionShow]);
 
   useImperativeHandle(ref, () => ({
     hide,
@@ -149,42 +172,9 @@ function Component(
     setImmediate(() => setStrategy(ModalDropdownStrategy.Render));
   };
 
-  const _onRequestClose = (reason: ModalHideReason) => {
-    if (onModalWillHide(reason) !== false) {
-      setStrategy(ModalDropdownStrategy.BeforeUnmounted);
-      animationState
-        .hide({
-          overlayBounds: overlayBounds.current,
-          triggerBounds: triggerBounds.current,
-          transitionShow,
-          transitionHide,
-        })
-        .then((_) => {
-          setStrategy(ModalDropdownStrategy.Unmounted);
-        });
-    }
-  };
-
-  const _onRequestOpen = (reason: ModalShowReason) => {
-    if (onModalWillShow(reason) !== false) {
-      // 如果是 slideUp 则先测量尺寸, 因为 slideUp 依赖元素高度, 否则就直接渲染
-      if (transitionShow === 'slideUp') {
-        setStrategy(ModalDropdownStrategy.Measure);
-      } else {
-        setStrategy(ModalDropdownStrategy.Render);
-        animationState.show({
-          overlayBounds: overlayBounds.current,
-          triggerBounds: triggerBounds.current,
-          transitionShow,
-          transitionHide,
-        });
-      }
-    }
-  };
-
   const _renderTrigger = useMemo(() => {
     if (typeof Trigger === 'function') {
-      return KeepTouchable(<Trigger />, {
+      return KeepTouchable(<Trigger/>, {
         onPress: () => _onRequestOpen(ModalShowReason.ClickTrigger),
       });
     } else if (typeof Trigger === 'object') {
@@ -230,7 +220,7 @@ function Component(
           {Overlay}
         </LayoutCapture>
       ) : (
-        ModalDropdownStrategy.Render && (
+        (strategy === ModalDropdownStrategy.Render || strategy === ModalDropdownStrategy.BeforeUnmounted) && (
           <TouchableWithoutFeedback
             onPress={() => _onRequestClose(ModalHideReason.ClickOverlayOutside)}
           >
@@ -241,8 +231,8 @@ function Component(
                 style={[
                   frameStyle,
                   { position: 'absolute' },
-                  animated && animationState.animatedStyle,
                   style.shadow,
+                  animated && animationState.animatedStyle,
                 ]}
               >
                 {Overlay}
@@ -259,6 +249,7 @@ function Component(
       value={{
         triggerBounds: triggerBounds.current,
         overlayBounds: overlayBounds.current,
+        windowSize: windowDimensions,
         safeArea: safeArea,
         onRequestClose: () =>
           _onRequestClose(ModalHideReason.ClickOverlayInside),

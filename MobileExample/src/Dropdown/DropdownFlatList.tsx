@@ -21,7 +21,6 @@ export default function DropdownFlatList<T extends string | number>({
   defaultIndex,
   ...props
 }: DropdownFlatListProps<T>) {
-  const windowDimensions = useWindowDimensions();
   const context = useModalDropdownContext();
 
   const _onItemPress = (item, itemIndex) => {
@@ -67,7 +66,7 @@ export default function DropdownFlatList<T extends string | number>({
       style={[
         {
           backgroundColor: '#ffffff',
-          height: windowDimensions.height / 5,
+          height: context.windowSize.height / 5,
         },
         { width: context.triggerBounds.w },
         props.style,

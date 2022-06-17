@@ -3,11 +3,11 @@ import { SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import DemoVirtualCurrencyDropdown from './DemoVirtualCurrencyDropdown';
 import { ModalDropdown } from '@monchilin/react-native-dropdown';
 import DropdownFlatList from '../Dropdown/DropdownFlatList';
-import DemoFilters from './DemoFilters';
+import DemoFullscreenFilters from './DemoFullscreenFilters';
 
 const DEMOS = {
   VirtualCurrencyDropdown: DemoVirtualCurrencyDropdown,
-  Filter: DemoFilters,
+  DemoFullscreenFilters: DemoFullscreenFilters,
 };
 
 const DEMO_LABELS = Object.keys(DEMOS) as (keyof typeof DEMOS)[];

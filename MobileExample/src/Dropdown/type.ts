@@ -20,6 +20,8 @@ export type ModalDropdownContextType = {
   // trigger 自身的尺寸
   triggerBounds: Bounds;
   overlayBounds: Bounds;
+  // 可视区域的大小
+  windowSize: Size;
   // 可视区域, 该参数一般通过 safeArea 相关的库获取, 例如 https://github.com/th3rdwave/react-native-safe-area-context#usesafeareainsets
   safeArea?: EdgeInsets;
   // 准备关闭 overlay

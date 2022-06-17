@@ -1,6 +1,6 @@
 import React from 'react';
 import { id } from './internal/utils';
-import { ModalDropdownContextType } from './type';
+import type { ModalDropdownContextType, Size } from './type';
 
 const defaultValue: ModalDropdownContextType = {
   onRequestClose: id,
@@ -9,6 +9,7 @@ const defaultValue: ModalDropdownContextType = {
   visible: false,
   overlayBounds: { x: 0, y: 0, w: 0, h: 0 },
   triggerBounds: { x: 0, y: 0, w: 0, h: 0 },
+  windowSize: { height: 0, width: 0 },
   safeArea: undefined,
 };
 

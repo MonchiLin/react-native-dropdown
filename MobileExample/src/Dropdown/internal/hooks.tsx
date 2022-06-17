@@ -181,17 +181,17 @@ const transitions: Record<string, Transition> = {
 };
 
 export const useAnimation = () => {
-  const animatedValue = useRef(new Animated.Value(90)).current;
+  const animatedValueRef = useRef(new Animated.Value(90));
   const [animatedStyle, setAnimatedStyle] = useState({});
 
   const show: AnimationExecute = ({ transitionShow, overlayBounds }) => {
-    const transitionShowConfig = getTransition(transitionShow, {
+    const transition = getTransition(transitionShow, {
       overlayBounds,
     });
-    const interpolate = animatedValue.interpolate(
-      transitionShowConfig.interpolate!
+    const interpolate = animatedValueRef.current.interpolate(
+      transition.interpolate!
     );
-    animatedValue.setValue(transitionShowConfig.initialValue);
+    animatedValueRef.current.setValue(transition.initialValue);
 
     switch (transitionShow) {
       case 'flipUp':
@@ -204,16 +204,19 @@ export const useAnimation = () => {
         setAnimatedStyle({ opacity: interpolate });
         break;
       case 'slideUp':
-        setAnimatedStyle({ height: interpolate, overflow: 'hidden' });
+        // 如果上一次执行动画时 useNativeDriver = true 就要重新初始化 Animated.Value 实例,
+        // 否则 RN 就会以 useNativeDriver = true 的情况下来执行, 产生 height 无法被动画的 bug
+        animatedValueRef.current = new Animated.Value(transition.initialValue);
+        setAnimatedStyle({ height: animatedValueRef.current, overflow: 'hidden' });
         break;
       default:
         setAnimatedStyle({});
     }
 
     return new Promise((resolve) => {
-      Animated[transitionShowConfig.animationType](
-        animatedValue,
-        transitionShowConfig.config
+      Animated[transition.animationType](
+        animatedValueRef.current,
+        transition.config
       ).start(() => {
         setAnimatedStyle((state) => ({ ...state, overflow: 'visible' }));
         resolve();
@@ -222,13 +225,13 @@ export const useAnimation = () => {
   };
 
   const hide: AnimationExecute = ({ overlayBounds, transitionHide }) => {
-    const transitionHideConfig = getTransition(transitionHide, {
+    const transition = getTransition(transitionHide, {
       overlayBounds,
     });
-    const interpolate = animatedValue.interpolate(
-      transitionHideConfig.interpolate!
+    const interpolate = animatedValueRef.current.interpolate(
+      transition.interpolate!
     );
-    animatedValue.setValue(transitionHideConfig.initialValue);
+    animatedValueRef.current.setValue(transition.initialValue);
 
     switch (transitionHide) {
       case 'flipDown':
@@ -241,16 +244,17 @@ export const useAnimation = () => {
         setAnimatedStyle({ opacity: interpolate });
         break;
       case 'slideDown':
-        setAnimatedStyle({ height: interpolate, overflow: 'hidden' });
+        animatedValueRef.current = new Animated.Value(transition.initialValue);
+        setAnimatedStyle({ height: animatedValueRef.current, overflow: 'hidden' });
         break;
       default:
         setAnimatedStyle({});
     }
 
     return new Promise<void>((resolve) => {
-      Animated[transitionHideConfig.animationType](
-        animatedValue,
-        transitionHideConfig.config
+      Animated[transition.animationType](
+        animatedValueRef.current,
+        transition.config
       ).start(() => {
         setAnimatedStyle((state) => ({ ...state, overflow: 'visible' }));
         resolve();
@@ -271,9 +275,9 @@ type useSizeParameters = {
 };
 
 export const useSize = ({
-  heightSourceStyle,
-  widthSourceStyle,
-}: useSizeParameters) => {
+                          heightSourceStyle,
+                          widthSourceStyle,
+                        }: useSizeParameters) => {
   const height = useMemo(() => {
     const style = StyleSheet.flatten(
       heightSourceStyle.find((item) => StyleSheet.flatten(item).height)

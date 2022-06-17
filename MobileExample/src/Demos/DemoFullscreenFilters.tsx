@@ -41,6 +41,7 @@ function OrderPanel({ onSelect }) {
       }}
     >
       <FlatList
+        keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{ backgroundColor: '#ffffff' }}
         data={Orders}
         renderItem={({ item, index }) => {
@@ -126,7 +127,7 @@ function PriceRangePanel({
   );
 }
 
-export default function DemoFilters() {
+export default function DemoFullscreenFilters() {
   const [visible1, setVisible1] = useState(false);
   const [visible2, setVisible2] = useState(false);
 
