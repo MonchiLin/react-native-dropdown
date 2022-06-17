@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { StyleSheet, View, Text, Button } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import FeaturesScreen from './Feature/Features';
 import DemosScreen from './Demos/Demos';
