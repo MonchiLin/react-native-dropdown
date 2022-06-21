@@ -35,7 +35,7 @@ export default function DemoBlurView() {
       Overlay={
         context => <BlurView
           tint="light"
-          intensity={40}
+          intensity={10}
           style={{
             left: 0,
             top: 0,

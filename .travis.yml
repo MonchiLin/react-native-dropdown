@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+  - '16'
+install:
+  - cd MobileExample
+  - yarn
+test: false
+script:
+  - cd MobileExample
+  - cd web:build
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  local_dir: MobileExample/web-build
+  keep_history: true
+  on:
+    branch: next
