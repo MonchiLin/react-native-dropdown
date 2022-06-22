@@ -1,0 +1,8 @@
+{
+  "description": "Example app for @monchilin/react-native-dropdown",
+  "display": "standalone",
+  "lang": "en",
+  "name": "@monchilin/react-native-dropdown-example",
+  "short_name": "@monchilin/react-native-dropdown-example",
+  "start_url": "/?utm_source=web_app_manifest"
+}
