@@ -139,7 +139,7 @@ function Component(
   // overlay 预渲染阶段的尺寸捕获
   const onOverlayCapture = async (bounds: Bounds) => {
     overlayBounds.current = bounds;
-    // 先显示动画, 然后等到下个事件循环在更新 ModalDropdownStrategy, 否则在 web 上运行有问题, 会闪烁
+    // 先显示动画, 然后等到下个事件循环在更新 OverlayStrategy, 否则在 web 上运行有问题, 会闪烁
     animationState.show({
       overlayBounds: overlayBounds.current,
       triggerBounds: triggerBounds.current,

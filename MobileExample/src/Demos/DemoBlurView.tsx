@@ -22,8 +22,6 @@ export default function DemoBlurView() {
   const [visible, setVisibleState] = useState(false);
   const [index, updateIndex] = useState(-1);
 
-  const uri = 'https://s3.amazonaws.com/exp-icon-assets/ExpoEmptyManifest_192.png';
-
   return <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
     <ModalDropdown
       onModalWillHide={() => setVisibleState(false)}
@@ -35,7 +33,7 @@ export default function DemoBlurView() {
       Overlay={
         context => <BlurView
           tint="light"
-          intensity={40}
+          intensity={10}
           style={{
             left: 0,
             top: 0,

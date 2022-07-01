@@ -17,8 +17,8 @@ import { AnimatedDownArrow } from '../Common';
 const DATA_SOURCE = ['BNA', 'USDI', 'SHUIBI', 'ATC', 'CTC'];
 
 const ArrowDropDown = ({
-  style,
-}: {
+                         style,
+                       }: {
   style: Animated.WithAnimatedValue<StyleProp<ImageStyle>>;
 }) => {
   return (
@@ -34,38 +34,41 @@ export default function DemoVirtualCurrencyDropdown() {
   const [index, updateIndex] = useState(-1);
 
   return (
-    <ModalDropdown
-      transitionHide={'scaleOut'}
-      transitionShow={'scaleIn'}
-      onModalWillHide={() => setVisibleState(false)}
-      onModalWillShow={() => setVisibleState(true)}
-      visible={visible}
-      Overlay={
-        <DropdownFlatList
-          data={DATA_SOURCE}
-          index={index}
-          onSelect={({ index }) => updateIndex(index)}
-          renderItem={({ item, isActive }) => {
-            return (
-              <View style={[styles.item, isActive && styles.itemActive]}>
-                <Text style={{ color: '#FFFFFF' }}>{item}</Text>
-              </View>
-            );
-          }}
-        />
-      }
-      Trigger={
-        <TouchableOpacity
-          onPress={() => setVisibleState(true)}
-          style={[styles.labelContainer, styles.item]}
-        >
-          <Text style={{ color: '#FFFFFF' }}>
-            {DATA_SOURCE[index] ?? 'Select Currency'}
-          </Text>
-          <AnimatedDownArrow visible={visible} />
-        </TouchableOpacity>
-      }
-    />
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <ModalDropdown
+        triggerContainerProps={{ testID: "asdasd" }}
+        transitionHide={'scaleOut'}
+        transitionShow={'scaleIn'}
+        onModalWillHide={() => setVisibleState(false)}
+        onModalWillShow={() => setVisibleState(true)}
+        visible={visible}
+        Overlay={
+          <DropdownFlatList
+            data={DATA_SOURCE}
+            index={index}
+            onSelect={({ index }) => updateIndex(index)}
+            renderItem={({ item, isActive }) => {
+              return (
+                <View style={[styles.item, isActive && styles.itemActive]}>
+                  <Text style={{ color: '#FFFFFF' }}>{item}</Text>
+                </View>
+              );
+            }}
+          />
+        }
+        Trigger={
+          <TouchableOpacity
+            onPress={() => setVisibleState(true)}
+            style={[styles.labelContainer, styles.item]}
+          >
+            <Text style={{ color: '#FFFFFF' }}>
+              {DATA_SOURCE[index] ?? 'Select Currency'}
+            </Text>
+            <AnimatedDownArrow visible={visible}/>
+          </TouchableOpacity>
+        }
+      />
+    </View>
   );
 }
 

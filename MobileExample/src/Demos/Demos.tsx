@@ -5,6 +5,7 @@ import { ModalDropdown } from '@monchilin/react-native-dropdown';
 import DropdownFlatList from '../Dropdown/DropdownFlatList';
 import DemoFullscreenFilters from './DemoFullscreenFilters';
 import DemoBlurView from "./DemoBlurView";
+import { getSearch } from "../Common";
 
 const DEMOS = {
   VirtualCurrencyDropdown: DemoVirtualCurrencyDropdown,
@@ -15,7 +16,13 @@ const DEMOS = {
 const DEMO_LABELS = Object.keys(DEMOS) as (keyof typeof DEMOS)[];
 
 export default function DemosScreen() {
-  const [demoIndex, updateDemoIndex] = useState(2);
+  const search = getSearch();
+  const [demoIndex, updateDemoIndex] = useState(() => {
+    const name: keyof typeof DEMOS = search.demo as any;
+
+    return DEMO_LABELS.includes(name) ? DEMO_LABELS.indexOf(name) : 0;
+  });
+
 
   const Component = DEMOS[DEMO_LABELS[demoIndex]];
 

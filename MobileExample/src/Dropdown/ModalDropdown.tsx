@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState, } from 'react';
+import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef, } from 'react';
 import {
   Animated,
   LayoutChangeEvent,
@@ -11,11 +11,11 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 
-import type { Bounds, EdgeInsets, ModalDropdownHandles, ModalDropdownProps, } from './type';
+import type { Bounds, EdgeInsets, ModalDropdownContextType, ModalDropdownHandles, ModalDropdownProps, } from './type';
 import { id, truth } from './internal/utils';
-import { useAnimation } from './internal/hooks';
+import { useAnimation, useOverlayStrategy } from './internal/hooks';
 import { ModalDropdownProvider } from './context';
-import { ModalDropdownStrategy, ModalHideReason, ModalShowReason, } from './enums';
+import { ModalHideReason, ModalShowReason, OverlayStrategy, } from './enums';
 import { KeepTouchable, LayoutCapture } from './internal/components';
 
 function Component(
@@ -23,14 +23,14 @@ function Component(
     safeArea,
     visible,
     animated = true,
+    shaded = true,
     placement = 'bottomCenter',
     transitionShow = 'flipUp',
     transitionHide = 'flipDown',
     adjustFrame = id,
     onModalWillHide = truth,
     onModalWillShow = truth,
-    dropdownProps = {},
-    dropdownStyle = {},
+    triggerContainerProps = {},
     modalProps = {},
     Trigger,
     Overlay,
@@ -75,14 +75,12 @@ function Component(
 
   const animationState = useAnimation();
 
-  // 渲染阶段
-  // 0 预渲染, 这个阶段会尝试计算 overlay 的尺寸和位置
-  // 1 渲染, 这个阶段才会真正渲染
-  const [strategy, setStrategy] = useState(ModalDropdownStrategy.Unmounted);
+  // overlay 的渲染阶段
+  const strategy = useOverlayStrategy(OverlayStrategy.None);
 
   const _onRequestClose = (reason: ModalHideReason) => {
     if (onModalWillHide(reason) !== false) {
-      setStrategy(ModalDropdownStrategy.BeforeUnmounted);
+      strategy.change(OverlayStrategy.BeforeUnmounted);
       animationState
         .hide({
           overlayBounds: overlayBounds.current,
@@ -91,7 +89,7 @@ function Component(
           transitionHide,
         })
         .then((_) => {
-          setStrategy(ModalDropdownStrategy.Unmounted);
+          strategy.change(OverlayStrategy.Unmounted);
         });
     }
   };
@@ -99,17 +97,25 @@ function Component(
   const _onRequestOpen = (reason: ModalShowReason) => {
     if (onModalWillShow(reason) !== false) {
       // 如果是 slideUp 则先测量尺寸, 因为 slideUp 依赖元素高度, 否则就直接渲染
-      if (transitionShow === 'slideUp') {
-        setStrategy(ModalDropdownStrategy.Measure);
-      } else {
-        setStrategy(ModalDropdownStrategy.Render);
-        animationState.show({
-          overlayBounds: overlayBounds.current,
-          triggerBounds: triggerBounds.current,
-          transitionShow,
-          transitionHide,
-        });
-      }
+      // if (transitionShow === 'slideUp') {
+      //   strategy.change(OverlayStrategy.Measure);
+      // } else {
+      //   strategy.change(OverlayStrategy.BeforeMounted);
+      //   animationState.show({
+      //     overlayBounds: overlayBounds.current,
+      //     triggerBounds: triggerBounds.current,
+      //     transitionShow,
+      //     transitionHide,
+      //   });
+      // }
+
+      strategy.change(OverlayStrategy.Measure);
+      animationState.show({
+        overlayBounds: overlayBounds.current,
+        triggerBounds: triggerBounds.current,
+        transitionShow,
+        transitionHide,
+      });
     }
   };
   // 手动隐藏
@@ -143,7 +149,7 @@ function Component(
 
   const onLayout = (event: LayoutChangeEvent) => {
     // 保持传入的 onLayout 事件
-    dropdownProps.onLayout?.(event);
+    triggerContainerProps.onLayout?.(event);
     triggerRef.current.measure((_fx, _fy, width, height, px, py) => {
       triggerBounds.current = { x: px, y: py, w: width, h: height };
     });
@@ -162,14 +168,18 @@ function Component(
   // overlay 预渲染阶段的尺寸捕获
   const onOverlayCapture = async (bounds: Bounds) => {
     overlayBounds.current = bounds;
-    // 先显示动画, 然后等到下个事件循环在更新 ModalDropdownStrategy, 否则在 web 上运行有问题, 会闪烁
-    animationState.show({
-      overlayBounds: overlayBounds.current,
-      triggerBounds: triggerBounds.current,
-      transitionShow,
-      transitionHide,
-    });
-    setImmediate(() => setStrategy(ModalDropdownStrategy.Render));
+    // 先显示动画, 然后等到下个事件循环在更新 OverlayStrategy, 否则在 web 上运行有问题, 会闪烁
+    animationState
+      .show({
+        overlayBounds: overlayBounds.current,
+        triggerBounds: triggerBounds.current,
+        transitionShow,
+        transitionHide,
+      })
+      .then(res => {
+        strategy.change(OverlayStrategy.Mounted);
+      });
+    setImmediate(() => strategy.change(OverlayStrategy.BeforeMounted));
   };
 
   const _renderTrigger = useMemo(() => {
@@ -193,19 +203,22 @@ function Component(
   }, [Trigger, transitionShow, transitionHide]);
 
   const frameStyle = calcPosition();
-  // overlay 没有被挂载, 并且动画不在执行
-  const modalVisible = strategy !== ModalDropdownStrategy.Unmounted;
 
-  const context = {
+  const context: ModalDropdownContextType = {
     triggerBounds: triggerBounds.current,
     overlayBounds: overlayBounds.current,
     windowSize: windowDimensions,
+    animatedStyle: animationState.animatedStyle,
     safeArea: safeArea,
     onRequestClose: () =>
       _onRequestClose(ModalHideReason.ClickOverlayInside),
-    visible: modalVisible,
+    visible: strategy.visible,
     show: show,
     hide: hide,
+  };
+
+  if (triggerContainerProps.testID) {
+    console.log("strategy.visible", strategy.state, strategy.visible);
   }
 
   const _renderModel = (
@@ -224,15 +237,15 @@ function Component(
       hasBackdrop={false}
       animationInTiming={1}
       animationOutTiming={1}
-      isVisible={modalVisible}
+      isVisible={strategy.visible}
       onBackButtonPress={() => _onRequestClose(ModalHideReason.ClickBackButton)}
     >
-      {strategy === ModalDropdownStrategy.Measure ? (
+      {strategy.isMeasure ? (
         <LayoutCapture onCapture={onOverlayCapture} style={frameStyle}>
           {typeof Overlay === "function" ? <Overlay {...context}/> : Overlay}
         </LayoutCapture>
       ) : (
-        (strategy === ModalDropdownStrategy.Render || strategy === ModalDropdownStrategy.BeforeUnmounted) && (
+        strategy.visible && (
           <TouchableWithoutFeedback
             onPress={() => _onRequestClose(ModalHideReason.ClickOverlayOutside)}
           >
@@ -243,7 +256,7 @@ function Component(
                 style={[
                   frameStyle,
                   { position: 'absolute' },
-                  style.shadow,
+                  shaded && style.shadow,
                   animated && animationState.animatedStyle,
                 ]}
               >
@@ -257,24 +270,12 @@ function Component(
   );
 
   return (
-    <ModalDropdownProvider
-      value={{
-        triggerBounds: triggerBounds.current,
-        overlayBounds: overlayBounds.current,
-        windowSize: windowDimensions,
-        safeArea: safeArea,
-        onRequestClose: () =>
-          _onRequestClose(ModalHideReason.ClickOverlayInside),
-        visible: modalVisible,
-        show: show,
-        hide: hide,
-      }}
-    >
+    <ModalDropdownProvider value={context}>
       <View
-        {...dropdownProps}
+        {...triggerContainerProps}
         onLayout={onLayout}
         ref={triggerRef}
-        style={[dropdownStyle, { position: 'relative' }]}
+        style={[triggerContainerProps.style, { position: 'relative' }]}
       >
         {_renderTrigger}
         {_renderModel}

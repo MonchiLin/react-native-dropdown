@@ -74,7 +74,7 @@ const ArrowDropDown = ({
   );
 };
 
-export default function BaseExample() {
+export default function BaseFeatures() {
   const [index, updateIndex] = useState(-1);
   const [visible1, setVisible1State] = useState(false);
   const [visible2, setVisible2State] = useState(false);
@@ -218,7 +218,7 @@ export default function BaseExample() {
         {/*</Dropdown>*/}
 
         {/*<Divider/>*/}
-        {/*<Text style={styles.label}>Custom Render Item</Text>*/}
+        {/*<Text style={styles.label}>Custom Mount Item</Text>*/}
         {/*<ModalDropdown*/}
         {/*  Overlay={*/}
         {/*    <DropdownFlatList*/}

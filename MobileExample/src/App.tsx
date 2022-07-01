@@ -8,6 +8,7 @@ import {
   DropdownFlatList,
   ModalDropdown,
 } from '@monchilin/react-native-dropdown';
+import { getSearch } from "./Common";
 
 const Views = {
   FeaturesScreen: FeaturesScreen,
@@ -17,7 +18,10 @@ const Views = {
 const ViewLabels = Object.keys(Views) as (keyof typeof Views)[];
 
 export default function App() {
-  const [viewIndex, updateExampleIndex] = useState(1);
+  const search = getSearch();
+  const [viewIndex, updateExampleIndex] = useState(() => {
+    return ViewLabels.includes(search.view) ? ViewLabels.indexOf(search.view) : 0;
+  });
 
   const Component = Views[ViewLabels[viewIndex]];
 
@@ -34,10 +38,10 @@ export default function App() {
                 data={ViewLabels}
               />
             }
-            Trigger={<DropdownButton label={ViewLabels[viewIndex]} />}
+            Trigger={<DropdownButton label={ViewLabels[viewIndex]}/>}
           />
         </View>
-        <Component />
+        <Component/>
       </SafeAreaView>
     </SafeAreaProvider>
   );

@@ -119,8 +119,10 @@ function PriceRangePanel({
             />
           </View>
           <View style={{ height: 20 }} />
-          <Button title={'Confirm'} onPress={onConfirm} />
-          <Button title={'Clear'} onPress={onClear} />
+          <View style={{ flexDirection: "row", justifyContent: "space-evenly", width: "100%" }}>
+            <Button title={'Confirm'} onPress={onConfirm} />
+            <Button title={'Clear'} onPress={onClear} />
+          </View>
         </View>
       </TouchableWithoutFeedback>
     </View>

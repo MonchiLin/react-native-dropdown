@@ -1,98 +1,30 @@
 version: 2.1
 
-executors:
-  default:
-    docker:
-      - image: circleci/node:10
-    working_directory: ~/project
-
-commands:
-  attach_project:
-    steps:
-      - attach_workspace:
-          at: ~/project
-
+orbs:
+  gh-pages: sugarshin/gh-pages@1.0.0
+  node: circleci/node@5.0.2
 jobs:
-  install-dependencies:
-    executor: default
+  build_deploy:
+    executor: gh-pages/default
     steps:
       - checkout
-      - attach_project
-      - restore_cache:
-          keys:
-            - dependencies-{{ checksum "package.json" }}
-            - dependencies-
-      - restore_cache:
-          keys:
-            - dependencies-example-{{ checksum "example/package.json" }}
-            - dependencies-example-
+      - node/install:
+          install-yarn: true
+          node-version: '16.13'
       - run:
-          name: Install dependencies
+          name: Build
           command: |
-            yarn install --cwd example --frozen-lockfile
-            yarn install --frozen-lockfile
-      - save_cache:
-          key: dependencies-{{ checksum "package.json" }}
-          paths: node_modules
-      - save_cache:
-          key: dependencies-example-{{ checksum "example/package.json" }}
-          paths: example/node_modules
-      - persist_to_workspace:
-          root: .
-          paths: .
-
-  lint:
-    executor: default
-    steps:
-      - attach_project
-      - run:
-          name: Lint files
-          command: |
-            yarn lint
-
-  typescript:
-    executor: default
-    steps:
-      - attach_project
-      - run:
-          name: Typecheck files
-          command: |
-            yarn typescript
-
-  unit-tests:
-    executor: default
-    steps:
-      - attach_project
-      - run:
-          name: Run unit tests
-          command: |
-            yarn test --coverage
-      - store_artifacts:
-          path: coverage
-          destination: coverage
-
-  build-package:
-    executor: default
-    steps:
-      - attach_project
-      - run:
-          name: Build package
-          command: |
-            yarn prepare
+            yarn global add expo-cli
+            yarn
+            cd MobileExample
+            yarn
+            yarn web:build
+      - gh-pages/deploy:
+          setup-git: true
+          ssh-fingerprints: 43:a5:19:51:55:12:95:cc:70:30:4e:12:12:e6:13:32
+          build-dir: MobileExample/web-build
 
 workflows:
-  build-and-test:
+  Build and Deploy:
     jobs:
-      - install-dependencies
-      - lint:
-          requires:
-            - install-dependencies
-      - typescript:
-          requires:
-            - install-dependencies
-      - unit-tests:
-          requires:
-            - install-dependencies
-      - build-package:
-          requires:
-            - install-dependencies
+      - build_deploy

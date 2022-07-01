@@ -1,6 +1,7 @@
 import { AnimationExecute, Bounds, ModalDropdownAnimations } from '../type';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, StyleProp, StyleSheet, ViewStyle } from 'react-native';
+import { OverlayStrategy } from "../enums";
 
 // 跳过第一次, 并且仅在 whenDeps 改变时触发
 export const useEffectWhenWithSkipFirst = (
@@ -81,10 +82,12 @@ const getTransition = (
   }
 };
 
+const duration = 1000
+
 const transitions: Record<string, Transition> = {
   flipUp: {
     config: {
-      duration: 200,
+      duration: duration,
       toValue: 0,
       useNativeDriver: true,
     },
@@ -97,7 +100,7 @@ const transitions: Record<string, Transition> = {
   },
   flipDown: {
     config: {
-      duration: 200,
+      duration: duration,
       toValue: 90,
       useNativeDriver: true,
     },
@@ -110,7 +113,7 @@ const transitions: Record<string, Transition> = {
   },
   scaleIn: {
     config: {
-      duration: 200,
+      duration: duration,
       toValue: 1,
       useNativeDriver: true,
     },
@@ -123,7 +126,7 @@ const transitions: Record<string, Transition> = {
   },
   scaleOut: {
     config: {
-      duration: 200,
+      duration: duration,
       toValue: 0,
       useNativeDriver: true,
     },
@@ -137,7 +140,7 @@ const transitions: Record<string, Transition> = {
   fadeIn: {
     config: {
       toValue: 1,
-      duration: 200,
+      duration: duration,
       useNativeDriver: true,
     },
     interpolate: {
@@ -150,7 +153,7 @@ const transitions: Record<string, Transition> = {
   fadeOut: {
     config: {
       toValue: 0,
-      duration: 200,
+      duration: duration,
       useNativeDriver: true,
     },
     interpolate: {
@@ -163,7 +166,7 @@ const transitions: Record<string, Transition> = {
   slideUp: {
     config: {
       toValue: 0,
-      duration: 200,
+      duration: duration,
       useNativeDriver: false,
     },
     initialValue: 0,
@@ -172,7 +175,7 @@ const transitions: Record<string, Transition> = {
   slideDown: {
     config: {
       toValue: 0,
-      duration: 200,
+      duration: duration,
       useNativeDriver: false,
     },
     initialValue: 0,
@@ -269,36 +272,36 @@ export const useAnimation = () => {
   };
 };
 
-type useSizeParameters = {
-  heightSourceStyle: StyleProp<ViewStyle>[];
-  widthSourceStyle: StyleProp<ViewStyle>[];
-};
-
-export const useSize = ({
-                          heightSourceStyle,
-                          widthSourceStyle,
-                        }: useSizeParameters) => {
-  const height = useMemo(() => {
-    const style = StyleSheet.flatten(
-      heightSourceStyle.find((item) => StyleSheet.flatten(item).height)
-    );
-    const _height = style?.height ? style.height.toString() : '0';
-    return Number.parseFloat(_height);
-  }, [heightSourceStyle]);
-
-  const width = useMemo(() => {
-    const style = StyleSheet.flatten(
-      widthSourceStyle.find((item) => StyleSheet.flatten(item).width)
-    );
-    const _width = style?.width ? style.width.toString() : '0';
-    return Number.parseFloat(_width);
-  }, [widthSourceStyle]);
-
-  return {
-    height,
-    width,
-  };
-};
+// type useSizeParameters = {
+//   heightSourceStyle: StyleProp<ViewStyle>[];
+//   widthSourceStyle: StyleProp<ViewStyle>[];
+// };
+//
+// export const useSize = ({
+//                           heightSourceStyle,
+//                           widthSourceStyle,
+//                         }: useSizeParameters) => {
+//   const height = useMemo(() => {
+//     const style = StyleSheet.flatten(
+//       heightSourceStyle.find((item) => StyleSheet.flatten(item).height)
+//     );
+//     const _height = style?.height ? style.height.toString() : '0';
+//     return Number.parseFloat(_height);
+//   }, [heightSourceStyle]);
+//
+//   const width = useMemo(() => {
+//     const style = StyleSheet.flatten(
+//       widthSourceStyle.find((item) => StyleSheet.flatten(item).width)
+//     );
+//     const _width = style?.width ? style.width.toString() : '0';
+//     return Number.parseFloat(_width);
+//   }, [widthSourceStyle]);
+//
+//   return {
+//     height,
+//     width,
+//   };
+// };
 
 export const useBorderWidth = (styles: ViewStyle[]) => {
   // 获取 Trigger 的精准边框, 这样可以更精确的的计算 Trigger 的尺寸
@@ -320,4 +323,45 @@ export const useBorderWidth = (styles: ViewStyle[]) => {
   }, [styles]);
 
   return borderState;
+};
+
+export const useOverlayStrategy = (initialValue: OverlayStrategy = OverlayStrategy.None) => {
+  const [state, setState] = useState(initialValue);
+  /**
+   * overlay 是否显示
+   */
+  const visible = useMemo(() => {
+    switch (state) {
+      case OverlayStrategy.Measure:
+      case OverlayStrategy.BeforeMounted:
+      case OverlayStrategy.Mounted:
+      case OverlayStrategy.BeforeUnmounted:
+        return true;
+      case OverlayStrategy.None:
+      case OverlayStrategy.Unmounted:
+        return false;
+    }
+  }, [state]);
+
+  /**
+   * 判断是否处于测量阶段
+   */
+  const isMeasure = useMemo(() => {
+    switch (state) {
+      case OverlayStrategy.Measure:
+        return true;
+      case OverlayStrategy.BeforeMounted:
+      case OverlayStrategy.Mounted:
+      case OverlayStrategy.None:
+      case OverlayStrategy.BeforeUnmounted:
+      case OverlayStrategy.Unmounted:
+        return false;
+    }
+  }, [state]);
+
+  const change = (newState: OverlayStrategy) => {
+    setState(newState);
+  }
+
+  return { state, visible, isMeasure, change };
 };

@@ -9,6 +9,7 @@ import type {
 import type { ModalProps } from 'react-native-modal';
 import type { ModalHideReason, ModalShowReason } from './enums';
 import type { ReactNode } from 'react';
+import { Animated } from "react-native";
 
 export type ModalDropdownContextType = {
   // 如果传入 safeArea 则尝试计算相较于 trigger 的安全区域
@@ -32,6 +33,7 @@ export type ModalDropdownContextType = {
   hide: () => void;
   // 当前 overlay 是否可见
   visible: boolean;
+  animatedStyle: Animated.AnimatedProps<StyleProp<ViewStyle>>;
 };
 
 export type AnimationExecute = (params: {
@@ -149,6 +151,8 @@ export type ModalDropdownProps = {
   visible?: boolean;
   // 是否启动 dropdown 动画
   animated?: boolean;
+  // 是否显示阴影
+  shaded?: boolean;
   // 显示时的动画效果
   transitionShow?: ModalDropdownAnimations['transitionShow'];
   // 隐藏式的动画效果
@@ -165,10 +169,8 @@ export type ModalDropdownProps = {
   // 位置
   placement?: ModalDropdownPlacement;
 
-  // 根容器相关
-  // 根容器的样式
-  dropdownProps?: Omit<ViewProps, 'style'>;
-  dropdownStyle?: StyleProp<ViewStyle>;
+  // 根容器 props
+  triggerContainerProps?: ViewProps;
 
   // Modal 相关
   modalProps?: Partial<

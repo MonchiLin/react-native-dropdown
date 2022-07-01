@@ -50,3 +50,15 @@ export const Divider = () => {
     />
   );
 };
+
+export const getSearch = (): { view?: "FeaturesScreen" | "DemosScreen", demo?: string } => {
+  if (typeof location === 'undefined') {
+    return {};
+  }
+
+  // @ts-ignore
+  return [...new URLSearchParams(location.search)]
+    .reduce((p, c) => {
+      return { ...p, [c[0]]: c[1] };
+    }, {});
+};

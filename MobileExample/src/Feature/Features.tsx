@@ -2,16 +2,17 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import WithAnimation from './WithAnimation';
 import WithAutoPosition from './WithAutoPosition';
-import BaseExample from './BaseExample';
+import BaseFeatures from './BaseFeatures';
 import WithImperative from './WithImperative';
 import {
   DropdownFlatList,
   ModalDropdown,
 } from '@monchilin/react-native-dropdown';
 import WithSafeArea from './WithSafeArea';
+import { getSearch } from "../Common";
 
 const FeaturesConstants = {
-  BaseExample: BaseExample,
+  BaseFeatures: BaseFeatures,
   WithAnimation: WithAnimation,
   WithAutoPosition: WithAutoPosition,
   WithImperative: WithImperative,
@@ -23,7 +24,12 @@ const FeatureLabels = Object.keys(
 ) as (keyof typeof FeaturesConstants)[];
 
 export default function FeaturesScreen() {
-  const [exampleIndex, updateExampleIndex] = useState(1);
+  const search = getSearch();
+  const [exampleIndex, updateExampleIndex] = useState(() => {
+    const name: keyof typeof FeaturesConstants = search.demo as any;
+
+    return FeatureLabels.includes(name) ? FeatureLabels.indexOf(name) : 0;
+  });
 
   const Component = FeaturesConstants[FeatureLabels[exampleIndex]];
 
