@@ -186,8 +186,15 @@ const transitions: Record<string, Transition> = {
 export const useAnimation = () => {
   const animatedValueRef = useRef(new Animated.Value(90));
   const [animatedStyle, setAnimatedStyle] = useState({});
+  // 避免重复执行动画效果
+  // const isClosing = useRef(false);
+  // const isShowing = useRef(false);
 
   const show: AnimationExecute = ({ transitionShow, overlayBounds }) => {
+    // if (isShowing.current) {
+    //   return Promise.reject('Already showing');
+    // }
+
     const transition = getTransition(transitionShow, {
       overlayBounds,
     });
@@ -216,6 +223,7 @@ export const useAnimation = () => {
         setAnimatedStyle({});
     }
 
+    // isShowing.current = true;
     return new Promise((resolve) => {
       Animated[transition.animationType](
         animatedValueRef.current,
@@ -223,11 +231,15 @@ export const useAnimation = () => {
       ).start(() => {
         setAnimatedStyle((state) => ({ ...state, overflow: 'visible' }));
         resolve();
+        // isShowing.current = false;
       });
     });
   };
 
   const hide: AnimationExecute = ({ overlayBounds, transitionHide }) => {
+    // if (isClosing.current) {
+    //   return Promise.reject('Already closing');
+    // }
     const transition = getTransition(transitionHide, {
       overlayBounds,
     });
@@ -254,6 +266,7 @@ export const useAnimation = () => {
         setAnimatedStyle({});
     }
 
+    // isClosing.current = true;
     return new Promise<void>((resolve) => {
       Animated[transition.animationType](
         animatedValueRef.current,
@@ -261,6 +274,7 @@ export const useAnimation = () => {
       ).start(() => {
         setAnimatedStyle((state) => ({ ...state, overflow: 'visible' }));
         resolve();
+        // isClosing.current = false;
       });
     });
   };

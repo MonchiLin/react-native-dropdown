@@ -39,6 +39,7 @@ export default function FeaturesScreen() {
       <View style={styles.focus}>
         <Text>current example:</Text>
         <ModalDropdown
+          triggerContainerProps={{ testID: 'demos' }}
           Trigger={FeatureLabels[exampleIndex]}
           Overlay={
             <DropdownFlatList

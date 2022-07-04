@@ -6,11 +6,13 @@ import DropdownFlatList from '../Dropdown/DropdownFlatList';
 import DemoFullscreenFilters from './DemoFullscreenFilters';
 import DemoBlurView from "./DemoBlurView";
 import { getSearch } from "../Common";
+import DemoWithInput from "./DemoWithInput";
 
 const DEMOS = {
   VirtualCurrencyDropdown: DemoVirtualCurrencyDropdown,
   DemoFullscreenFilters: DemoFullscreenFilters,
   DemoBlurView: DemoBlurView,
+  DemoWithInput: DemoWithInput,
 };
 
 const DEMO_LABELS = Object.keys(DEMOS) as (keyof typeof DEMOS)[];
@@ -35,7 +37,7 @@ export default function DemosScreen() {
           Trigger={DEMO_LABELS[demoIndex]}
           Overlay={
             <DropdownFlatList
-              style={{ width: 100 }}
+              style={{ minWidth: 168 }}
               data={DEMO_LABELS}
               onSelect={({ index }) => updateDemoIndex(index)}
             />

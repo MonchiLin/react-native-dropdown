@@ -12,7 +12,7 @@ import {
 import Modal from 'react-native-modal';
 
 import type { Bounds, EdgeInsets, ModalDropdownContextType, ModalDropdownHandles, ModalDropdownProps, } from './type';
-import { id, truth } from './internal/utils';
+import { id, PositionJudge, truth } from './internal/utils';
 import { useAnimation, useOverlayStrategy } from './internal/hooks';
 import { ModalDropdownProvider } from './context';
 import { ModalHideReason, ModalShowReason, OverlayStrategy, } from './enums';
@@ -24,12 +24,14 @@ function Component(
     visible,
     animated = true,
     shaded = true,
-    placement = 'bottomCenter',
+    placement = 'bottom',
     transitionShow = 'flipUp',
     transitionHide = 'flipDown',
     adjustFrame = id,
     onModalWillHide = truth,
     onModalWillShow = truth,
+    onModalShow = truth,
+    onModalHide = truth,
     triggerContainerProps = {},
     modalProps = {},
     Trigger,
@@ -44,31 +46,14 @@ function Component(
   const overlayBounds = useRef<Bounds>({ x: 0, y: 0, w: 0, h: 0 });
 
   const calcPosition = useCallback(() => {
-    // 首先根据 style 的对象获取 dropdown 容器的高度
-    const overlayHeight = overlayBounds.current.h;
 
-    // x: 按钮的 x 点（相对于屏幕左上角）
-    // y: 按钮的 y 点（相对于屏幕顶点）
-    // w: 按钮的 width
-    // h: 按钮的 height
-    const { x, y, w, h } = triggerBounds.current;
-
-    // 距离底部的空间
-    const buttonSpace = windowDimensions.height - y - h;
-    // 距离右边的空间
-    const rightSpace = windowDimensions.width - x;
-    // 如果距离底部的空间大于等于 dropdown 的高度 或者 底部空间
-    const showInBottom = buttonSpace >= overlayHeight || buttonSpace >= y;
-    const showInLeft = rightSpace >= x;
-    const position: EdgeInsets = {
-      top: showInBottom ? y + h : Math.max(0, y - overlayHeight),
-    };
-
-    if (showInLeft) {
-      position.left = x;
-    } else {
-      position.right = rightSpace - w;
-    }
+    const position: EdgeInsets = PositionJudge.judge({
+      triggerBounds: triggerBounds.current,
+      placement,
+      windowSize: windowDimensions,
+      overlayBounds: overlayBounds.current,
+      safeArea,
+    });
 
     return adjustFrame(position);
   }, [adjustFrame, windowDimensions]);
@@ -79,44 +64,36 @@ function Component(
   const strategy = useOverlayStrategy(OverlayStrategy.None);
 
   const _onRequestClose = (reason: ModalHideReason) => {
-    if (onModalWillHide(reason) !== false) {
-      strategy.change(OverlayStrategy.BeforeUnmounted);
-      animationState
-        .hide({
-          overlayBounds: overlayBounds.current,
-          triggerBounds: triggerBounds.current,
-          transitionShow,
-          transitionHide,
-        })
-        .then((_) => {
-          strategy.change(OverlayStrategy.Unmounted);
-        });
-    }
-  };
-
-  const _onRequestOpen = (reason: ModalShowReason) => {
-    if (onModalWillShow(reason) !== false) {
-      // 如果是 slideUp 则先测量尺寸, 因为 slideUp 依赖元素高度, 否则就直接渲染
-      // if (transitionShow === 'slideUp') {
-      //   strategy.change(OverlayStrategy.Measure);
-      // } else {
-      //   strategy.change(OverlayStrategy.BeforeMounted);
-      //   animationState.show({
-      //     overlayBounds: overlayBounds.current,
-      //     triggerBounds: triggerBounds.current,
-      //     transitionShow,
-      //     transitionHide,
-      //   });
-      // }
-
-      strategy.change(OverlayStrategy.Measure);
-      animationState.show({
+    visiblePrev.current = false;
+    onModalWillHide(reason);
+    strategy.change(OverlayStrategy.BeforeUnmounted);
+    animationState
+      .hide({
         overlayBounds: overlayBounds.current,
         triggerBounds: triggerBounds.current,
         transitionShow,
         transitionHide,
+      })
+      .then((_) => {
+        onModalHide(reason);
+        strategy.change(OverlayStrategy.Unmounted);
       });
-    }
+  };
+
+  const _onRequestOpen = (reason: ModalShowReason) => {
+    visiblePrev.current = true;
+    onModalWillShow(reason);
+    strategy.change(OverlayStrategy.Measure);
+    animationState
+      .show({
+        overlayBounds: overlayBounds.current,
+        triggerBounds: triggerBounds.current,
+        transitionShow,
+        transitionHide,
+      })
+      .then((_) => {
+        onModalShow(reason);
+      });
   };
   // 手动隐藏
   const hide = () => _onRequestClose(ModalHideReason.WithRef);
@@ -218,7 +195,7 @@ function Component(
   };
 
   if (triggerContainerProps.testID) {
-    console.log("strategy.visible", strategy.state, strategy.visible);
+    console.log(context.triggerBounds);
   }
 
   const _renderModel = (
@@ -240,32 +217,46 @@ function Component(
       isVisible={strategy.visible}
       onBackButtonPress={() => _onRequestClose(ModalHideReason.ClickBackButton)}
     >
-      {strategy.isMeasure ? (
-        <LayoutCapture onCapture={onOverlayCapture} style={frameStyle}>
-          {typeof Overlay === "function" ? <Overlay {...context}/> : Overlay}
-        </LayoutCapture>
-      ) : (
-        strategy.visible && (
-          <TouchableWithoutFeedback
-            onPress={() => _onRequestClose(ModalHideReason.ClickOverlayOutside)}
-          >
-            <View style={{ flex: 1 }}>
-              <Animated.View
-                ref={overlayRef}
-                onLayout={onOverlayLayout}
-                style={[
-                  frameStyle,
-                  { position: 'absolute' },
-                  shaded && style.shadow,
-                  animated && animationState.animatedStyle,
-                ]}
-              >
-                {typeof Overlay === "function" ? <Overlay {...context}/> : Overlay}
-              </Animated.View>
-            </View>
-          </TouchableWithoutFeedback>
-        )
-      )}
+      {
+        strategy.isMeasure ? (
+          <LayoutCapture onCapture={onOverlayCapture} style={frameStyle}>
+            {typeof Overlay === "function" ? <Overlay {...context}/> : Overlay}
+          </LayoutCapture>
+        ) : (
+          strategy.visible && (
+            <TouchableWithoutFeedback
+              onPress={() => _onRequestClose(ModalHideReason.ClickOverlayOutside)}
+            >
+              <View style={{ flex: 1 }}>
+                {
+                  animated
+                    ? <Animated.View
+                      ref={overlayRef}
+                      onLayout={onOverlayLayout}
+                      style={[
+                        frameStyle,
+                        { position: 'absolute' },
+                        shaded && style.shadow,
+                        animationState.animatedStyle,
+                      ]}
+                    >
+                      {typeof Overlay === "function" ? <Overlay {...context}/> : Overlay}
+                    </Animated.View>
+                    : <View
+                      ref={overlayRef}
+                      onLayout={onOverlayLayout}
+                      style={[
+                        frameStyle,
+                        shaded && style.shadow,
+                      ]}
+                    >
+                      {typeof Overlay === "function" ? <Overlay {...context}/> : Overlay}
+                    </View>
+                }
+              </View>
+            </TouchableWithoutFeedback>
+          )
+        )}
     </Modal>
   );
 

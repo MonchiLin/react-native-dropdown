@@ -65,6 +65,7 @@ export type Size = {
   height: number;
 };
 
+// 支持的过渡效果
 export type ModalDropdownAnimations = {
   transitionShow: 'flipUp' | 'scaleIn' | 'fadeIn' | 'slideUp';
   transitionHide: 'flipDown' | 'scaleOut' | 'fadeOut' | 'slideDown';
@@ -137,36 +138,43 @@ export type DropdownButtonProps = DropdownButtonPropsBase &
   );
 
 export type ModalDropdownPlacement =
-  | 'bottomLeft'
-  | 'bottomCenter'
-  | 'bottomRight'
-  | 'topLeft'
-  | 'topCenter'
-  | 'topRight';
+  | 'bottom'
+  | 'top'
+  | 'left'
+  | 'right'
 
 export type ModalDropdownProps = {
+  // 触发 Overlay 的元素
+  Trigger: ReactNode | string;
+  // 触发 Overlay 后弹出的元素
+  Overlay: JSX.Element | JSX.Element[] | ((context: ModalDropdownContextType) => JSX.Element);
   // 可视区域, 该参数一般通过 safeArea 相关的库获取, 例如 https://github.com/th3rdwave/react-native-safe-area-context#usesafeareainsets
   safeArea?: EdgeInsets;
-  // 是否显示
+  // 是否显示 overlay
   visible?: boolean;
-  // 是否启动 dropdown 动画
+  // 是否显示交互动画
   animated?: boolean;
-  // 是否显示阴影
+  // 是否为 overlay 增加阴影效果
   shaded?: boolean;
-  // 显示时的动画效果
+  // 显示 overlay 时的过渡动画
   transitionShow?: ModalDropdownAnimations['transitionShow'];
-  // 隐藏式的动画效果
+  // 隐藏 overlay 时的过渡动画
   transitionHide?: ModalDropdownAnimations['transitionHide'];
 
   // 每次更新 Modal 位置之前触发的回调函数，如果需要自定义 Modal 位置，则返回符合 Position 类型的对象即可
   adjustFrame?: (position: EdgeInsets) => EdgeInsets;
 
-  // 触发在 dropdown 显示之前，如果返回 false 则不显示 dropdown
-  onModalWillShow?: (reason: ModalShowReason) => boolean | void;
-  // 触发在 dropdown 关闭之前，如果返回 false 则不隐藏 dropdown
-  onModalWillHide?: (reason: ModalHideReason) => boolean | void;
+  // 触发在 overlay 显示之前, 此时开始执行过渡动画
+  onModalWillShow?: (reason: ModalShowReason) => void;
+  // 触发在 overlay 关闭之前, 此时开始执行过渡动画
+  onModalWillHide?: (reason: ModalHideReason) => void;
 
-  // 位置
+  // 触发在 overlay 显示时, 此时过渡动画已结束
+  onModalShow?: (reason: ModalShowReason) => void;
+  // 触发在 overlay 关闭后, 此时过渡动画已数据
+  onModalHide?: (reason: ModalHideReason) => void;
+
+  // overlay 相较于 trigger 的位置
   placement?: ModalDropdownPlacement;
 
   // 根容器 props
@@ -185,11 +193,6 @@ export type ModalDropdownProps = {
       | 'animationOutTiming'
     >
   >;
-
-  // 触发 Dropdown 的元素
-  Trigger: ReactNode | string;
-  // 触发 Dropdown 后弹出的元素
-  Overlay: JSX.Element | JSX.Element[] | ((context: ModalDropdownContextType) => JSX.Element);
 };
 
 export type ModalDropdownHandles = {
