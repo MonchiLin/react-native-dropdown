@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import { DropdownButtonProps } from './type';
-import { DownArrow } from './internal/components';
+import { DownArrow } from './internal/DownArrow';
 import { useModalDropdownContext } from './context';
 
 export default function DropdownButton(props: DropdownButtonProps) {

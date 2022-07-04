@@ -59,7 +59,6 @@ export default function WithAnimation() {
         />
         <Divider />
         <ModalDropdown
-          dropdownProps={{ testID: 'debug' }}
           transitionShow={showAnimations[transitionShowIndex]}
           transitionHide={hiddenAnimations[transitionHiddenIndex]}
           Overlay={<DropdownFlatList data={DEMO_OPTIONS_1} />}

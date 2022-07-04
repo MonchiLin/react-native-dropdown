@@ -82,7 +82,7 @@ const getTransition = (
   }
 };
 
-const duration = 1000
+const duration = 200
 
 const transitions: Record<string, Transition> = {
   flipUp: {

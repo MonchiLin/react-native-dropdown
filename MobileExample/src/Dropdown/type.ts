@@ -1,6 +1,6 @@
 import type {
   FlatListProps,
-  GestureResponderEvent,
+  GestureResponderEvent, RegisteredStyle,
   StyleProp,
   TextStyle,
   ViewProps,
@@ -33,7 +33,7 @@ export type ModalDropdownContextType = {
   hide: () => void;
   // 当前 overlay 是否可见
   visible: boolean;
-  animatedStyle: Animated.AnimatedProps<StyleProp<ViewStyle>>;
+  animatedStyle: any;
 };
 
 export type AnimationExecute = (params: {

@@ -13,7 +13,7 @@
     "publish": "expo publish",
     "test": "jest"
   },
-  "homepage": "https://github.com/MonchiLin/react-native-dropdown",
+  "homepage": "https://github.com/react-native-dropdown",
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
     "@rneui/base": "^4.0.0-rc.4",

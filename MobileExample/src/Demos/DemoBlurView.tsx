@@ -1,19 +1,6 @@
 import React, { useState } from 'react';
-import {
-  Animated,
-  ImageStyle,
-  StyleProp,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image
-} from 'react-native';
-import {
-  DropdownFlatList,
-  ModalDropdown,
-} from '@monchilin/react-native-dropdown';
-import { AnimatedDownArrow } from '../Common';
+import { Animated, StyleSheet, Text, View } from 'react-native';
+import { DropdownFlatList, ModalDropdown, } from '@monchilin/react-native-dropdown';
 import { BlurView } from "expo-blur";
 
 const DATA_SOURCE = ['BNA', 'USDI', 'SHUIBI', 'ATC', 'CTC'];
@@ -28,9 +15,10 @@ export default function DemoBlurView() {
       onModalWillShow={() => setVisibleState(true)}
       visible={visible}
       animated={false}
-      // 第一步, 调整
+      // 首先, 调整 overlay 的位置, 这样 ModalDropdown 就不会在处理 overlay 的位置
       adjustFrame={i => ({ top: 0, left: 0, right: 0, bottom: 0 })}
       Overlay={
+        // 创建全屏的 BlurView
         context => <BlurView
           tint="light"
           intensity={10}
@@ -42,20 +30,35 @@ export default function DemoBlurView() {
             height: context.windowSize.height
           }}
         >
-          <DropdownFlatList
-            data={DATA_SOURCE}
-            index={index}
-            onSelect={({ index }) => updateIndex(index)}
-            style={{ width: 100, position: "absolute", left: context.triggerBounds.x, top: context.triggerBounds.y }}
-            renderItem={({ item, isActive }) => {
-              return (
-                <View style={[styles.item, isActive && styles.itemActive]}>
-                  <Text style={{ color: '#FFFFFF' }}>{item}</Text>
-                </View>
-              );
-            }}
-          />
-        </BlurView>}
+          {/* 从 context 中获取动画样式和 trigger 的位置 */}
+          <Animated.View
+            style={
+              [
+                context.animatedStyle,
+                {
+                  position: "absolute",
+                  left: context.triggerBounds.x,
+                  top: context.triggerBounds.y
+                }
+              ]
+            }
+          >
+            <DropdownFlatList
+              data={DATA_SOURCE}
+              index={index}
+              onSelect={({ index }) => updateIndex(index)}
+              style={{ width: 100, }}
+              renderItem={({ item, isActive }) => {
+                return (
+                  <View style={[styles.item, isActive && styles.itemActive]}>
+                    <Text style={{ color: '#FFFFFF' }}>{item}</Text>
+                  </View>
+                );
+              }}
+            />
+          </Animated.View>
+        </BlurView>
+      }
       Trigger={DATA_SOURCE[index] ?? 'Select Currency'}
     />
   </View>;
